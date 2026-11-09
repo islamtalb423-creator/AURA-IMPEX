@@ -100,7 +100,11 @@ const T={
 ar:{ship:"🚚 شحن مجاني للطلبات فوق 50$",lang:"اللغة:",search:"ابحث عن منتج...",searchBtn:"بحث",cart:"السلة",hero:"عروض فلاش · خصومات حتى 70%",heroSub:"تنتهي العروض خلال",f1:"🛡️ حماية المشتري",f2:"🚚 شحن سريع",f3:"↩️ إرجاع خلال 15 يوم",f4:"🔒 دفع آمن",deals:"عروض اليوم",add:"أضف للسلة",sold:"تم بيع",empty:"السلة فارغة",total:"الإجمالي",checkout:"إتمام الشراء",name:"الاسم الكامل",phone:"رقم الهاتف",addr:"العنوان",payM:"طريقة الدفع",pCard:"بطاقة بنكية",pCod:"الدفع عند الاستلام",pBank:"تحويل بنكي",payNow:"ادفع الآن",ok:"✅ تم استلام طلبك بنجاح! شكراً لتسوقك من AURA IMPEX",fill:"أكمل الاسم والهاتف والعنوان",all:"الكل",c:["الكل","إلكترونيات","أزياء","المنزل","جمال"]},
 en:{ship:"🚚 Free shipping on orders over $50",lang:"Language:",search:"Search for products...",searchBtn:"Search",cart:"Cart",hero:"Flash Deals · Up to 70% off",heroSub:"Deals end in",f1:"🛡️ Buyer protection",f2:"🚚 Fast shipping",f3:"↩️ 15-day returns",f4:"🔒 Secure payment",deals:"Today's deals",add:"Add to cart",sold:"sold",empty:"Your cart is empty",total:"Total",checkout:"Checkout",name:"Full name",phone:"Phone number",addr:"Address",payM:"Payment method",pCard:"Credit / debit card",pCod:"Cash on delivery",pBank:"Bank transfer",payNow:"Pay now",ok:"✅ Order received! Thank you for shopping at AURA IMPEX",fill:"Please fill in name, phone and address",c:["All","Electronics","Fashion","Home","Beauty"]},
 fr:{ship:"🚚 Livraison gratuite dès 50$",lang:"Langue :",search:"Rechercher un produit...",searchBtn:"Chercher",cart:"Panier",hero:"Ventes flash · Jusqu'à -70%",heroSub:"Fin des offres dans",f1:"🛡️ Protection acheteur",f2:"🚚 Livraison rapide",f3:"↩️ Retour sous 15 jours",f4:"🔒 Paiement sécurisé",deals:"Offres du jour",add:"Ajouter",sold:"vendus",empty:"Votre panier est vide",total:"Total",checkout:"Commander",name:"Nom complet",phone:"Téléphone",addr:"Adresse",payM:"Mode de paiement",pCard:"Carte bancaire",pCod:"Paiement à la livraison",pBank:"Virement bancaire",payNow:"Payer maintenant",ok:"✅ Commande reçue ! Merci d'avoir acheté chez AURA IMPEX",fill:"Renseignez nom, téléphone et adresse",c:["Tout","Électronique","Mode","Maison","Beauté"]}};
-const P=[
+const CFG={API:"",REFRESH:300000}; // API: رابط السيرفر، مثال "https://api.yourstore.com"
+const mk=c=>c<10?1:c<25?2:c<50?3:c<100?4:5; // هامش ربحك بالدولار حسب سعر AliExpress
+const nm=x=>typeof x.n=="string"?x.n:(x.n[L]||x.n.en);
+function norm(a){return a.map((x,i)=>{const c=+(x.cost??x.p),p=+(x.price??c+mk(c));return{...x,id:String(x.id??i),cost:c,p:+p.toFixed(2),o:Math.max(+x.o||0,+(p*1.5).toFixed(2))}})}
+const F=[
 {e:"🎧",c:1,n:{ar:"سماعات بلوتوث لاسلكية",en:"Wireless Bluetooth Earbuds",fr:"Écouteurs Bluetooth sans fil"},p:12.99,o:39.9,s:5400},
 {e:"⌚",c:1,n:{ar:"ساعة ذكية رياضية",en:"Sport Smart Watch",fr:"Montre connectée sport"},p:24.5,o:79,s:3200},
 {e:"👟",c:2,n:{ar:"حذاء رياضي خفيف",en:"Lightweight Sneakers",fr:"Baskets légères"},p:19.9,o:55,s:2100},
@@ -109,6 +113,7 @@ const P=[
 {e:"☕",c:3,n:{ar:"ماكينة قهوة صغيرة",en:"Mini Coffee Maker",fr:"Mini cafetière"},p:29,o:69,s:950},
 {e:"💄",c:4,n:{ar:"طقم مكياج 12 قطعة",en:"12-piece Makeup Set",fr:"Set maquillage 12 pièces"},p:9.99,o:29,s:7300},
 {e:"📱",c:1,n:{ar:"حامل هاتف للسيارة",en:"Car Phone Holder",fr:"Support téléphone voiture"},p:3.5,o:12,s:12000}];
+let P=norm(F);
 let L="ar",cat=0,cart={},qs="";
 const $=s=>document.querySelector(s),t=k=>T[L][k];
 const money=v=>"$"+v.toFixed(2);
@@ -117,12 +122,12 @@ document.documentElement.lang=L;document.documentElement.dir=L=="ar"?"rtl":"ltr"
 document.querySelectorAll("[data-i]").forEach(e=>e.textContent=t(e.dataset.i));
 document.querySelectorAll("[data-ph]").forEach(e=>e.placeholder=t(e.dataset.ph));
 $("#cats").innerHTML=t("c").map((c,i)=>`<span class="${i==cat?"on":""}" data-c="${i}">${c}</span>`).join("");
-const list=P.map((x,i)=>({...x,i})).filter(x=>(!cat||x.c==cat)&&x.n[L].toLowerCase().includes(qs));
-$("#grid").innerHTML=list.map(x=>`<div class="p"><div class="im">${x.e}<em>-${Math.round((1-x.p/x.o)*100)}%</em></div><div class="bd"><h3>${x.n[L]}</h3><div class="pr">${money(x.p)}<s>${money(x.o)}</s></div><div class="mu">${t("sold")} ${x.s.toLocaleString()}+</div><button class="add" data-a="${x.i}">${t("add")}</button></div></div>`).join("");
+const list=P.filter(x=>(!cat||x.c==cat)&&nm(x).toLowerCase().includes(qs));
+$("#grid").innerHTML=list.map(x=>`<div class="p"><div class="im">${x.img?`<img src="${x.img}" alt="" loading="lazy" style="max-width:100%;max-height:100%;object-fit:contain">`:x.e||"📦"}<em>-${Math.round((1-x.p/x.o)*100)}%</em></div><div class="bd"><h3>${nm(x)}</h3><div class="pr">${money(x.p)}<s>${money(x.o)}</s></div><div class="mu">${t("sold")} ${(x.s||0).toLocaleString()}+</div><button class="add" data-a="${x.id}">${t("add")}</button></div></div>`).join("");
 cartUI()}
 function cartUI(){
 const ids=Object.keys(cart);let sum=0,n=0;
-$("#items").innerHTML=ids.length?ids.map(i=>{const x=P[i],q=cart[i];sum+=x.p*q;n+=q;return`<div class="row"><span class="e">${x.e}</span><div>${x.n[L]}<br><b style="color:var(--or)">${money(x.p)}</b></div><button data-d="${i}">−</button><b>${q}</b><button data-u="${i}">+</button></div>`}).join(""):`<p class="mu">${t("empty")}</p>`;
+$("#items").innerHTML=ids.length?ids.map(i=>{const x=P.find(y=>y.id==i);if(!x)return"";const q=cart[i];sum+=x.p*q;n+=q;return`<div class="row"><span class="e">${x.e||"📦"}</span><div>${nm(x)}<br><b style="color:var(--or)">${money(x.p)}</b></div><button data-d="${i}">−</button><b>${q}</b><button data-u="${i}">+</button></div>`}).join(""):`<p class="mu">${t("empty")}</p>`;
 $("#cn").textContent=n;$("#tot").textContent=$("#tot2").textContent=money(sum);$("#go").disabled=!n;$("#go").style.opacity=n?1:.5}
 document.addEventListener("click",e=>{const d=e.target.dataset;
 if(d.a!==undefined){cart[d.a]=(cart[d.a]||0)+1;cartUI()}
@@ -135,14 +140,19 @@ $("#go").onclick=()=>{$("#cov").classList.remove("on");$("#pov").classList.add("
 $("#lang").onchange=e=>{L=e.target.value;try{localStorage.setItem("aura_lang",L)}catch(_){}render()};
 $("#q").oninput=e=>{qs=e.target.value.toLowerCase();render()};
 document.querySelectorAll("[name=pm]").forEach(r=>r.onchange=()=>$("#card").style.display=r.value=="card"?"grid":"none");
-$("#pay").onclick=()=>{if(!$("#nm").value||!$("#ph").value||!$("#ad").value)return alert(t("fill"));
+$("#pay").onclick=async()=>{if(!$("#nm").value||!$("#ph").value||!$("#ad").value)return alert(t("fill"));
+const items=Object.keys(cart).map(id=>{const x=P.find(y=>y.id==id);return{id,aliId:x.aliId,qty:cart[id],price:x.p}});
+const order={customer:{name:$("#nm").value,phone:$("#ph").value,address:$("#ad").value},payment:document.querySelector("[name=pm]:checked").value,items,total:items.reduce((a,i)=>a+i.price*i.qty,0)};
+try{if(!CFG.API)throw 0;const r=await fetch(CFG.API+"/api/orders",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(order)});if(!r.ok)throw 0}
+catch(_){try{const q=JSON.parse(localStorage.getItem("aura_orders")||"[]");q.push(order);localStorage.setItem("aura_orders",JSON.stringify(q))}catch(_){}}
 alert(t("ok"));cart={};$("#pov").classList.remove("on");cartUI()};
+async function load(){try{const r=await fetch(CFG.API?CFG.API+"/api/products":"products.json",{cache:"no-store"});if(!r.ok)throw 0;const d=await r.json();if(d.length){P=norm(d);render()}}catch(_){}}
 // countdown
 let end=Date.now()+6*3600e3;
 setInterval(()=>{let r=Math.max(0,end-Date.now())/1e3|0;
 $("#h").textContent=String(r/3600|0).padStart(2,0);$("#m").textContent=String(r/60%60|0).padStart(2,0);$("#s").textContent=String(r%60).padStart(2,0)},1000);
 try{const s=localStorage.getItem("aura_lang");if(T[s])L=s}catch(_){}
-$("#lang").value=L;render();
+$("#lang").value=L;render();load();setInterval(load,CFG.REFRESH);
 </script>
 </body>
 </html>
