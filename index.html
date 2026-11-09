@@ -59,6 +59,18 @@ h2{margin:14px 0 8px;font-size:20px}
 #card{display:grid;grid-template-columns:1fr 1fr;gap:8px}#card .in:first-child{grid-column:1/3}
 footer{text-align:center;color:var(--mu);font-size:13px;padding:24px}
 :focus-visible{outline:2px solid var(--or2);outline-offset:2px}
+.badges{display:flex;gap:6px;flex-wrap:wrap;justify-content:center;margin:6px 0}
+.bg{border:1px solid var(--bd);border-radius:6px;padding:2px 8px;font-size:12px;font-weight:700;background:var(--card)}
+.big{height:280px;display:grid;place-items:center;background:#fff;border-radius:10px;font-size:110px;overflow:hidden}
+.big img{max-width:100%;max-height:100%;object-fit:contain}
+.th{display:flex;gap:6px;overflow-x:auto;padding:6px 0}
+.th span{flex:none;width:56px;height:56px;border:2px solid var(--bd);border-radius:8px;overflow:hidden;cursor:pointer;background:#fff}
+.th span.on{border-color:var(--or)}
+.th img{width:100%;height:100%;object-fit:cover}
+#brand{margin-inline-start:auto;font-weight:700;font-size:12px;color:var(--or)}
+.p .im,.p h3{cursor:pointer}
+.sp{width:100%;border-collapse:collapse;font-size:13px;margin-top:4px}.sp td{padding:6px 8px;border-bottom:1px solid var(--bd)}.sp td:first-child{color:var(--mu);width:38%}
+#pd{width:min(560px,96%)}
 </style>
 </head>
 <body>
@@ -73,12 +85,12 @@ footer{text-align:center;color:var(--mu);font-size:13px;padding:24px}
 <div class="wrap">
 <div class="cats" id="cats"></div>
 <div class="hero"><div><h1 data-i="hero"></h1><p data-i="heroSub"></p>
-<div class="cd"><i id="h">00</i><i id="m">00</i><i id="s">00</i></div></div><div class="em">🛍️</div></div>
+<div class="cd"><i id="h">00</i><i id="m">00</i><i id="s">00</i></div></div><div class="em" id="hi"></div></div>
 <div class="feat"><div data-i="f1"></div><div data-i="f2"></div><div data-i="f3"></div><div data-i="f4"></div></div>
 <h2 data-i="deals"></h2>
 <div class="grid" id="grid"></div>
 </div>
-<footer>© 2026 AURA IMPEX</footer>
+<footer><div class="badges"></div>© 2026 AURA IMPEX</footer>
 
 <div class="ov" id="cov"><div class="dr"><button class="x" data-close>✕</button><h2 data-i="cart"></h2><div id="items"></div>
 <div class="tot"><span data-i="total"></span><span id="tot"></span></div>
@@ -86,15 +98,20 @@ footer{text-align:center;color:var(--mu);font-size:13px;padding:24px}
 
 <div class="ov" id="pov"><div class="mo"><button class="x" data-close>✕</button><h2 data-i="checkout"></h2>
 <input class="in" id="nm" data-ph="name"><input class="in" id="ph" data-ph="phone" type="tel"><input class="in" id="ad" data-ph="addr">
-<b data-i="payM"></b>
-<label class="pay"><input type="radio" name="pm" value="card" checked>💳 <span data-i="pCard"></span></label>
-<div id="card"><input class="in" placeholder="1234 5678 9012 3456" inputmode="numeric" maxlength="19"><input class="in" placeholder="MM/YY" maxlength="5"><input class="in" placeholder="CVV" maxlength="4"></div>
+<b data-i="shipM"></b><div id="shl" style="display:grid;gap:6px"></div>
+<b data-i="payM"></b><div class="badges"></div>
+<label class="pay"><input type="radio" name="pm" value="card" checked>💳 <span data-i="pCard"></span><span id="brand"></span></label>
+<div id="card"><input class="in" id="cn1" placeholder="1234 5678 9012 3456" inputmode="numeric" maxlength="19" autocomplete="cc-number"><input class="in" placeholder="MM/YY" maxlength="5" autocomplete="cc-exp"><input class="in" placeholder="CVV" maxlength="4" autocomplete="cc-csc"></div>
 <label class="pay"><input type="radio" name="pm" value="pp">🅿️ PayPal</label>
+<label class="pay"><input type="radio" name="pm" value="wallet">📱 Apple Pay / Google Pay</label>
 <label class="pay"><input type="radio" name="pm" value="cod">💵 <span data-i="pCod"></span></label>
 <label class="pay"><input type="radio" name="pm" value="bank">🏦 <span data-i="pBank"></span></label>
+<div class="mu" style="display:flex;justify-content:space-between"><span data-i="sub"></span><span id="sb"></span></div>
+<div class="mu" style="display:flex;justify-content:space-between"><span data-i="shipC"></span><span id="sc"></span></div>
 <div class="tot"><span data-i="total"></span><span id="tot2"></span></div>
 <button class="main" id="pay" data-i="payNow"></button></div></div>
 
+<div class="ov" id="dov"><div class="mo" id="pd"></div></div>
 <div class="ov" id="aov"><div class="mo" style="width:min(700px,96%)"><button class="x" data-close>✕</button><h2>لوحة التحكم</h2><div id="ap"></div></div></div>
 <script>
 const T={
@@ -103,24 +120,48 @@ en:{ship:"🚚 Free shipping on orders over $50",lang:"Language:",search:"Search
 fr:{ship:"🚚 Livraison gratuite dès 50$",lang:"Langue :",search:"Rechercher un produit...",searchBtn:"Chercher",cart:"Panier",hero:"Ventes flash · Jusqu'à -70%",heroSub:"Fin des offres dans",f1:"🛡️ Protection acheteur",f2:"🚚 Livraison rapide",f3:"↩️ Retour sous 15 jours",f4:"🔒 Paiement sécurisé",deals:"Offres du jour",add:"Ajouter",sold:"vendus",empty:"Votre panier est vide",total:"Total",checkout:"Commander",name:"Nom complet",phone:"Téléphone",addr:"Adresse",payM:"Mode de paiement",pCard:"Carte bancaire",pCod:"Paiement à la livraison",pBank:"Virement bancaire",payNow:"Payer maintenant",ok:"✅ Commande reçue ! Merci d'avoir acheté chez AURA IMPEX",fill:"Renseignez nom, téléphone et adresse",c:["Tout","Électronique","Mode","Maison","Beauté"]}};
 const CFG={API:"",REFRESH:300000,WA:"",PASS:"admin123"}; // WA: رقمك بالصيغة الدولية بدون + لاستقبال الطلبات على واتساب | PASS: كلمة سر لوحة التحكم
 const LS=(k,d)=>{try{return JSON.parse(localStorage.getItem(k))??d}catch(_){return d}};
-const SV=(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v))}catch(_){}};
+const SV=(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v));return 1}catch(_){return 0}};
 const esc=s=>String(s??"").replace(/[&<>"']/g,c=>"&#"+c.charCodeAt(0)+";");
 let mine=LS("aura_products",[]);
-function setP(){P=norm([...(remote.length?remote:F),...mine]);render()} // API: رابط السيرفر، مثال "https://api.yourstore.com"
+function art(k,v){
+const c=[["#ffe3dc","#ff5a4d"],["#dce9ff","#3d7bff"],["#ddf6e6","#22a85f"]][v%3],f=c[1],g="#c4c4c4";
+const S={
+earbuds:`<rect x="115" y="205" width="170" height="105" rx="42" fill="#fff" stroke="${g}" stroke-width="3"/><path d="M115 250h170" stroke="#ddd" stroke-width="3"/><g fill="${f}"><circle cx="160" cy="150" r="30"/><circle cx="240" cy="150" r="30"/></g><g fill="#fff" stroke="${g}" stroke-width="3"><rect x="148" y="170" width="14" height="48" rx="7"/><rect x="238" y="170" width="14" height="48" rx="7"/></g>`,
+watch:`<rect x="168" y="50" width="64" height="300" rx="24" fill="#2b2b2b"/><circle cx="200" cy="200" r="78" fill="#444"/><circle cx="200" cy="200" r="66" fill="#111"/><circle cx="200" cy="200" r="60" fill="${f}" opacity=".9"/><path d="M200 200V160M200 200l28 16" stroke="#fff" stroke-width="7" stroke-linecap="round"/><rect x="276" y="185" width="10" height="30" rx="4" fill="#666"/>`,
+shoe:`<path d="M60 262V190q50-6 100-44l50 36 80 24q40 10 40 56z" fill="${f}"/><path d="M60 262h290q0 30-30 30H90q-30 0-30-30z" fill="#fff" stroke="${g}" stroke-width="3"/><path d="M165 155l20 22M190 168l20 22M215 181l20 22" stroke="#fff" stroke-width="6" stroke-linecap="round"/>`,
+bag:`<path d="M150 175c0-90 100-90 100 0" fill="none" stroke="#333" stroke-width="12"/><rect x="95" y="170" width="210" height="150" rx="20" fill="${f}"/><path d="M95 215h210" stroke="#fff" stroke-opacity=".35" stroke-width="4"/><circle cx="200" cy="215" r="11" fill="#ffd36a"/>`,
+lamp:`<circle cx="200" cy="130" r="95" fill="#fff6c9" opacity=".7"/><path d="M140 175l32-95h56l32 95z" fill="${f}"/><rect x="194" y="175" width="12" height="145" fill="#555"/><rect x="150" y="318" width="100" height="16" rx="8" fill="#333"/>`,
+coffee:`<rect x="105" y="80" width="190" height="250" rx="20" fill="#2f2f2f"/><rect x="105" y="80" width="190" height="46" rx="20" fill="${f}"/><rect x="155" y="130" width="14" height="40" fill="#555"/><rect x="140" y="236" width="120" height="82" rx="12" fill="#fff" opacity=".92"/><rect x="140" y="270" width="120" height="48" rx="10" fill="#6b3f26"/><circle cx="260" cy="105" r="8" fill="#fff"/>`,
+makeup:`<rect x="110" y="170" width="46" height="140" rx="6" fill="#2b2b2b"/><path d="M114 170v-60q19-22 38 0v60z" fill="${f}"/><rect x="180" y="215" width="170" height="95" rx="14" fill="#fff" stroke="${g}" stroke-width="3"/><circle cx="212" cy="245" r="13" fill="#ff8fa3"/><circle cx="250" cy="245" r="13" fill="#f4b183"/><circle cx="288" cy="245" r="13" fill="#b565a7"/><circle cx="326" cy="245" r="13" fill="#7aa2f7"/><circle cx="212" cy="283" r="13" fill="#d94f70"/><circle cx="250" cy="283" r="13" fill="#e3c16f"/><circle cx="288" cy="283" r="13" fill="#8ac6a0"/>`,
+holder:`<rect x="135" y="80" width="130" height="225" rx="20" fill="#1f1f1f"/><rect x="146" y="96" width="108" height="193" rx="10" fill="${f}"/><rect x="105" y="190" width="32" height="50" rx="8" fill="#555"/><rect x="263" y="190" width="32" height="50" rx="8" fill="#555"/><rect x="190" y="305" width="20" height="50" fill="#555"/><circle cx="200" cy="365" r="22" fill="#333"/>`,
+box:`<rect x="100" y="150" width="200" height="160" fill="#c9a36a"/><rect x="92" y="120" width="216" height="36" rx="4" fill="#b88d52"/><rect x="190" y="120" width="20" height="190" fill="#ecd9ae"/>`};
+const tf=["","translate(-60 -70) scale(1.3)","rotate(-8 200 200)"][v%3];
+const svg=`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400"><defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="${c[0]}"/><stop offset="1" stop-color="#fff"/></linearGradient></defs><rect width="400" height="400" fill="url(#g)"/><ellipse cx="200" cy="352" rx="110" ry="11" fill="#000" opacity=".15"/><g transform="${tf}">${S[k]||S.box}</g></svg>`;
+return "data:image/svg+xml;charset=utf-8,"+encodeURIComponent(svg)}
+const ds=x=>x.d&&typeof x.d=="object"?(x.d[L]||x.d.en||""):(x.d||"");
+const sps=x=>{const v=x.sp&&typeof x.sp=="object"?(x.sp[L]||x.sp.en):x.sp;return String(v||"").split(/\n|\|/).map(l=>l.split(/:(.+)/)).filter(a=>a[1]).map(a=>[a[0].trim(),a[1].trim()])};
+function info(x){const d=ds(x),p=sps(x);return(d?`<h3 style="margin-top:8px">${t("descL")}</h3><p style="font-size:14px;white-space:pre-line">${esc(d)}</p>`:"")+(p.length?`<h3 style="margin-top:8px">${t("specL")}</h3><table class="sp">${p.map(a=>`<tr><td>${esc(a[0])}</td><td>${esc(a[1])}</td></tr>`).join("")}</table>`:"")}
+function setP(){P=norm([...(remote.length?remote:LS("aura_hs",0)?[]:F),...mine]);render()} // API: رابط السيرفر، مثال "https://api.yourstore.com"
 const mk=c=>c<10?1:c<25?2:c<50?3:c<100?4:5; // هامش ربحك بالدولار حسب سعر AliExpress
 const nm=x=>typeof x.n=="string"?x.n:(x.n[L]||x.n.en);
-function norm(a){return a.map((x,i)=>{const c=+(x.cost??x.p),p=+(x.price??c+mk(c));return{...x,id:String(x.id??i),cost:c,p:+p.toFixed(2),o:Math.max(+x.o||0,+(p*1.5).toFixed(2))}})}
+function norm(a){return a.map((x,i)=>{const c=+(x.cost??x.p),p=+(x.price??c+mk(c));return{...x,imgs:x.imgs&&x.imgs.length?x.imgs:x.img?[x.img]:[0,1,2].map(v=>art(x.k||"box",v)),id:String(x.id??i),cost:c,p:+p.toFixed(2),o:Math.max(+x.o||0,+(p*1.5).toFixed(2))}})}
 const F=[
-{e:"🎧",c:1,n:{ar:"سماعات بلوتوث لاسلكية",en:"Wireless Bluetooth Earbuds",fr:"Écouteurs Bluetooth sans fil"},p:12.99,o:39.9,s:5400},
-{e:"⌚",c:1,n:{ar:"ساعة ذكية رياضية",en:"Sport Smart Watch",fr:"Montre connectée sport"},p:24.5,o:79,s:3200},
-{e:"👟",c:2,n:{ar:"حذاء رياضي خفيف",en:"Lightweight Sneakers",fr:"Baskets légères"},p:19.9,o:55,s:2100},
-{e:"👜",c:2,n:{ar:"حقيبة يد أنيقة",en:"Stylish Handbag",fr:"Sac à main élégant"},p:15.75,o:48,s:1800},
-{e:"💡",c:3,n:{ar:"إضاءة LED ذكية",en:"Smart LED Lamp",fr:"Lampe LED intelligente"},p:8.4,o:22,s:6900},
-{e:"☕",c:3,n:{ar:"ماكينة قهوة صغيرة",en:"Mini Coffee Maker",fr:"Mini cafetière"},p:29,o:69,s:950},
-{e:"💄",c:4,n:{ar:"طقم مكياج 12 قطعة",en:"12-piece Makeup Set",fr:"Set maquillage 12 pièces"},p:9.99,o:29,s:7300},
-{e:"📱",c:1,n:{ar:"حامل هاتف للسيارة",en:"Car Phone Holder",fr:"Support téléphone voiture"},p:3.5,o:12,s:12000}];
-let remote=[],P=norm([...F,...mine]);
-let L="ar",cat=0,cart={},qs="";
+{k:"earbuds",c:1,n:{ar:"سماعات بلوتوث لاسلكية",en:"Wireless Bluetooth Earbuds",fr:"Écouteurs Bluetooth sans fil"},p:12.99,o:39.9,s:5400,d:{ar:"سماعات لاسلكية بصوت نقي وجهير قوي، تتصل بهاتفك بسرعة وتأتي مع علبة شحن صغيرة تناسب الجيب. مناسبة للمكالمات والموسيقى والرياضة.",en:"Wireless earbuds with clear sound and punchy bass. They pair quickly and come with a pocket-sized charging case. Good for calls, music and workouts."},sp:{ar:"البلوتوث: 5.3|مدة التشغيل: 6 ساعات (24 ساعة مع العلبة)|مقاومة الماء: IPX4|منفذ الشحن: USB-C|الميكروفون: مدمج",en:"Bluetooth: 5.3|Playtime: 6 h (24 h with case)|Water resistance: IPX4|Charging port: USB-C|Microphone: built-in"}},
+{k:"watch",c:1,n:{ar:"ساعة ذكية رياضية",en:"Sport Smart Watch",fr:"Montre connectée sport"},p:24.5,o:79,s:3200,d:{ar:"ساعة ذكية تتابع خطواتك ونبضات قلبك ونومك، وتعرض إشعارات الهاتف على معصمك. شاشة واضحة وسوار مريح للاستخدام اليومي والرياضي.",en:"A smart watch that tracks steps, heart rate and sleep and shows phone notifications on your wrist. Clear screen and a comfortable strap for daily and sport use."},sp:{ar:"الشاشة: 1.7 بوصة|البطارية: حتى 5 أيام|مقاومة الماء: IP67|التوافق: Android و iOS|السوار: سيليكون",en:"Screen: 1.7 inch|Battery: up to 5 days|Water resistance: IP67|Compatibility: Android and iOS|Strap: silicone"}},
+{k:"shoe",c:2,n:{ar:"حذاء رياضي خفيف",en:"Lightweight Sneakers",fr:"Baskets légères"},p:19.9,o:55,s:2100,d:{ar:"حذاء رياضي خفيف بقماش شبكي يسمح بتهوية القدم، ونعل مبطّن يمنح راحة في المشي والجري.",en:"Lightweight sneakers with a breathable mesh upper and a cushioned sole for comfortable walking and running."},sp:{ar:"الخامة: قماش شبكي + نعل مطاط|المقاسات: 36 إلى 45|الألوان: أحمر، أزرق، أخضر|الوزن: حوالي 250 غ للفردة|الاستخدام: جري ومشي يومي",en:"Material: mesh + rubber sole|Sizes: 36 to 45|Colors: red, blue, green|Weight: about 250 g per shoe|Use: running and daily wear"}},
+{k:"bag",c:2,n:{ar:"حقيبة يد أنيقة",en:"Stylish Handbag",fr:"Sac à main élégant"},p:15.75,o:48,s:1800,d:{ar:"حقيبة يد أنيقة بتصميم عملي، واسعة تتسع للهاتف والمحفظة وأغراضك اليومية، مع حزام كتف قابل للإزالة.",en:"A stylish handbag with a practical design. Roomy enough for your phone, wallet and daily items, with a removable shoulder strap."},sp:{ar:"الخامة: جلد صناعي PU|الأبعاد: 30 × 22 × 12 سم|الجيوب: جيبان + جيب بسحاب|الحمل: مقبض + حزام كتف|الألوان: أحمر، أزرق، أخضر",en:"Material: PU leather|Size: 30 x 22 x 12 cm|Pockets: 2 + zip pocket|Carry: handle + shoulder strap|Colors: red, blue, green"}},
+{k:"lamp",c:3,n:{ar:"إضاءة LED ذكية",en:"Smart LED Lamp",fr:"Lampe LED intelligente"},p:8.4,o:22,s:6900,d:{ar:"مصباح LED بإضاءة قابلة للتعديل، تختار منها ألوان دافئة أو باردة حسب حاجتك للقراءة أو الاسترخاء، ويعمل بمنفذ USB.",en:"An LED lamp with adjustable light. Choose warm or cool tones for reading or relaxing. Powered through USB."},sp:{ar:"القدرة: 9 واط|السطوع: 800 لومن|حرارة اللون: 2700 إلى 6500 كلفن|التحكم: لمس + ريموت|التشغيل: USB 5 فولت",en:"Power: 9 W|Brightness: 800 lumens|Color temperature: 2700 to 6500 K|Control: touch + remote|Power supply: USB 5 V"}},
+{k:"coffee",c:3,n:{ar:"ماكينة قهوة صغيرة",en:"Mini Coffee Maker",fr:"Mini cafetière"},p:29,o:69,s:950,d:{ar:"ماكينة قهوة صغيرة تحضّر حتى 4 أكواب في دقائق، بحجم مناسب للمطبخ الصغير أو المكتب.",en:"A small coffee maker that brews up to 4 cups in minutes. Compact enough for a small kitchen or an office."},sp:{ar:"السعة: 600 مل (4 أكواب)|القدرة: 600 واط|الفلتر: قابل لإعادة الاستخدام|الإيقاف التلقائي: نعم|ملاحظة: تأكد من توافق القابس والجهد مع بلدك",en:"Capacity: 600 ml (4 cups)|Power: 600 W|Filter: reusable|Auto shut-off: yes|Note: check the plug and voltage for your country"}},
+{k:"makeup",c:4,n:{ar:"طقم مكياج 12 قطعة",en:"12-piece Makeup Set",fr:"Set maquillage 12 pièces"},p:9.99,o:29,s:7300,d:{ar:"طقم مكياج متكامل من 12 قطعة يضم أحمر شفاه وباليت ألوان وفرش، مناسب للاستخدام اليومي وللمناسبات.",en:"A complete 12-piece makeup set with lipstick, a color palette and brushes. Good for everyday looks and special occasions."},sp:{ar:"عدد القطع: 12|يناسب: جميع أنواع البشرة|المحتويات: أحمر شفاه، باليت، فرش|الاستخدام: يومي ومناسبات",en:"Pieces: 12|Suitable for: all skin types|Includes: lipstick, palette, brushes|Use: daily and occasions"}},
+{k:"holder",c:1,n:{ar:"حامل هاتف للسيارة",en:"Car Phone Holder",fr:"Support téléphone voiture"},p:3.5,o:12,s:12000,d:{ar:"حامل هاتف للسيارة بدوران 360 درجة، يثبت الهاتف بقوة بكأس شفط أو مشبك فتحة التكييف، ويناسب أغلب الهواتف.",en:"A car phone holder with 360-degree rotation. It grips your phone firmly with a suction cup or air-vent clip and fits most phones."},sp:{ar:"الدوران: 360 درجة|يناسب هواتف: من 4 إلى 7 بوصة|التثبيت: كأس شفط أو مشبك تكييف|الخامة: ABS + سيليكون",en:"Rotation: 360 degrees|Fits phones: 4 to 7 inch|Mount: suction cup or vent clip|Material: ABS + silicone"}}];
+let remote=[],P=norm([...(LS("aura_hs",0)?[]:F),...mine]);
+const X={
+ar:{shipM:"طريقة الشحن",s_std:"شحن عادي",s_exp:"شحن سريع",s_pri:"شحن ممتاز",days:"يوم",free:"مجاني",sub:"المجموع الفرعي",shipC:"الشحن",badCard:"رقم البطاقة غير صحيح",buyNow:"اشترِ الآن",descL:"وصف المنتج",specL:"الخصائص"},
+en:{shipM:"Shipping method",s_std:"Standard shipping",s_exp:"Express shipping",s_pri:"Priority shipping",days:"days",free:"Free",sub:"Subtotal",shipC:"Shipping",badCard:"Invalid card number",buyNow:"Buy now",descL:"Description",specL:"Specifications"},
+fr:{shipM:"Mode de livraison",s_std:"Livraison standard",s_exp:"Livraison express",s_pri:"Livraison prioritaire",days:"jours",free:"Gratuit",sub:"Sous-total",shipC:"Livraison",badCard:"Numéro de carte invalide",buyNow:"Acheter",descL:"Description",specL:"Caractéristiques"}};
+for(const k in X)Object.assign(T[k],X[k]);
+const SHIP=[{id:"std",d:"15-25",p:2.99,free:50},{id:"exp",d:"7-12",p:6.99},{id:"pri",d:"3-7",p:14.99}];
+let L="ar",cat=0,cart={},qs="",shSel="std",sub=0,cur=null;
 const $=s=>document.querySelector(s),t=k=>T[L][k];
 const money=v=>"$"+v.toFixed(2);
 function render(){
@@ -129,17 +170,20 @@ document.querySelectorAll("[data-i]").forEach(e=>e.textContent=t(e.dataset.i));
 document.querySelectorAll("[data-ph]").forEach(e=>e.placeholder=t(e.dataset.ph));
 $("#cats").innerHTML=t("c").map((c,i)=>`<span class="${i==cat?"on":""}" data-c="${i}">${c}</span>`).join("");
 const list=P.filter(x=>(!cat||x.c==cat)&&nm(x).toLowerCase().includes(qs));
-$("#grid").innerHTML=list.map(x=>`<div class="p"><div class="im">${x.img?`<img src="${x.img}" alt="" loading="lazy" style="max-width:100%;max-height:100%;object-fit:contain">`:x.e||"📦"}<em>-${Math.round((1-x.p/x.o)*100)}%</em></div><div class="bd"><h3>${nm(x)}</h3><div class="pr">${money(x.p)}<s>${money(x.o)}</s></div><div class="mu">${t("sold")} ${(x.s||0).toLocaleString()}+</div><button class="add" data-a="${x.id}">${t("add")}</button></div></div>`).join("");
-cartUI()}
+$("#grid").innerHTML=list.map(x=>`<div class="p"><div class="im" data-v="${x.id}"><img src="${x.imgs[0]}" alt="${esc(nm(x))}" loading="lazy" onerror="this.onerror=null;this.src=art('box',0)" style="width:100%;height:100%;object-fit:cover"><em>-${Math.round((1-x.p/x.o)*100)}%</em></div><div class="bd"><h3 data-v="${x.id}">${nm(x)}</h3><div class="pr">${money(x.p)}<s>${money(x.o)}</s></div><div class="mu">${t("sold")} ${(x.s||0).toLocaleString()}+</div><button class="add" data-a="${x.id}">${t("add")}</button></div></div>`).join("");
+$("#hi").innerHTML=`<img src="${art("bag",1)}" alt="" style="width:110px;height:110px;border-radius:18px">`;fillBadges();renderSh();cartUI()}
 function cartUI(){
 const ids=Object.keys(cart);let sum=0,n=0;
-$("#items").innerHTML=ids.length?ids.map(i=>{const x=P.find(y=>y.id==i);if(!x)return"";const q=cart[i];sum+=x.p*q;n+=q;return`<div class="row"><span class="e">${x.e||"📦"}</span><div>${nm(x)}<br><b style="color:var(--or)">${money(x.p)}</b></div><button data-d="${i}">−</button><b>${q}</b><button data-u="${i}">+</button></div>`}).join(""):`<p class="mu">${t("empty")}</p>`;
-$("#cn").textContent=n;$("#tot").textContent=$("#tot2").textContent=money(sum);$("#go").disabled=!n;$("#go").style.opacity=n?1:.5}
+$("#items").innerHTML=ids.length?ids.map(i=>{const x=P.find(y=>y.id==i);if(!x)return"";const q=cart[i];sum+=x.p*q;n+=q;return`<div class="row"><img src="${x.imgs[0]}" alt="" style="width:48px;height:48px;object-fit:cover;border-radius:8px"><div>${nm(x)}<br><b style="color:var(--or)">${money(x.p)}</b></div><button data-d="${i}">−</button><b>${q}</b><button data-u="${i}">+</button></div>`}).join(""):`<p class="mu">${t("empty")}</p>`;
+$("#cn").textContent=n;$("#tot").textContent=money(sum);sub=sum;calc();$("#go").disabled=!n;$("#go").style.opacity=n?1:.5}
 document.addEventListener("click",e=>{const d=e.target.dataset;
 if(d.a!==undefined){cart[d.a]=(cart[d.a]||0)+1;cartUI()}
 if(d.u!==undefined){cart[d.u]++;cartUI()}
 if(d.d!==undefined){if(--cart[d.d]<=0)delete cart[d.d];cartUI()}
 if(d.c!==undefined){cat=+d.c;render()}
+const vv=e.target.closest("[data-v]");if(vv)showP(vv.dataset.v);
+const gg=e.target.closest("[data-g]");if(gg&&cur){$("#big").innerHTML=bg(cur.imgs[gg.dataset.g],cur);document.querySelectorAll("[data-g]").forEach(z=>z.classList.toggle("on",z==gg))}
+if(d.bn!==undefined){cart[d.bn]=(cart[d.bn]||0)+1;cartUI();document.querySelectorAll(".ov").forEach(o=>o.classList.remove("on"));$("#cov").classList.add("on")}
 if(d.ad)adminAct(d);
 if(e.target.closest("[data-close]")||e.target.classList.contains("ov"))document.querySelectorAll(".ov").forEach(o=>o.classList.remove("on"))});
 $("#cb").onclick=()=>$("#cov").classList.add("on");
@@ -148,8 +192,9 @@ $("#lang").onchange=e=>{L=e.target.value;try{localStorage.setItem("aura_lang",L)
 $("#q").oninput=e=>{qs=e.target.value.toLowerCase();render()};
 document.querySelectorAll("[name=pm]").forEach(r=>r.onchange=()=>$("#card").style.display=r.value=="card"?"grid":"none");
 $("#pay").onclick=async()=>{if(!$("#nm").value||!$("#ph").value||!$("#ad").value)return alert(t("fill"));
+if(document.querySelector("[name=pm]:checked").value=="card"&&!luhn($("#cn1").value))return alert(t("badCard"));
 const items=Object.keys(cart).map(id=>{const x=P.find(y=>y.id==id);return{id,aliId:x.aliId,qty:cart[id],price:x.p,cost:x.cost,title:nm(x)}});
-const order={customer:{name:$("#nm").value,phone:$("#ph").value,address:$("#ad").value},payment:document.querySelector("[name=pm]:checked").value,items,total:items.reduce((a,i)=>a+i.price*i.qty,0)};
+const order={customer:{name:$("#nm").value,phone:$("#ph").value,address:$("#ad").value},payment:document.querySelector("[name=pm]:checked").value,items,shipping:calc().opt.id,shipCost:calc().ship,total:calc().grand};
 if(CFG.WA)window.open("https://wa.me/"+CFG.WA+"?text="+encodeURIComponent("🛒 AURA IMPEX\n"+order.customer.name+" | "+order.customer.phone+"\n"+order.customer.address+"\n"+items.map(i=>i.title+" x"+i.qty+" (AliExpress "+i.aliId+")").join("\n")+"\n$"+order.total.toFixed(2)+" - "+order.payment));
 try{if(!CFG.API)throw 0;const r=await fetch(CFG.API+"/api/orders",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(order)});if(!r.ok)throw 0}
 catch(_){const q=LS("aura_orders",[]);q.push({...order,at:new Date().toLocaleString(),done:false});SV("aura_orders",q)}
@@ -159,13 +204,27 @@ async function load(){try{const r=await fetch(CFG.API?CFG.API+"/api/products":"p
 let end=Date.now()+6*3600e3;
 setInterval(()=>{let r=Math.max(0,end-Date.now())/1e3|0;
 $("#h").textContent=String(r/3600|0).padStart(2,0);$("#m").textContent=String(r/60%60|0).padStart(2,0);$("#s").textContent=String(r%60).padStart(2,0)},1000);
+const BG=["VISA","Mastercard","AMEX","PayPal","Apple Pay","Google Pay"].map(b=>`<span class="bg">${b}</span>`).join("");
+function fillBadges(){document.querySelectorAll(".badges").forEach(e=>e.innerHTML=BG)}
+const bg=u=>`<img src="${u}" alt="" onerror="this.onerror=null;this.src=art('box',0)">`;
+function renderSh(){$("#shl").innerHTML=SHIP.map(o=>`<label class="pay"><input type="radio" name="sh" value="${o.id}" ${o.id==shSel?"checked":""}>🚚 <span>${t("s_"+o.id)}<br><small class="mu">${o.d} ${t("days")}</small></span><b style="margin-inline-start:auto;text-align:end">${o.p?money(o.p):t("free")}${o.free?`<br><small class="mu">${t("free")} ≥ $${o.free}</small>`:""}</b></label>`).join("")}
+function calc(){const o=SHIP.find(z=>z.id==shSel),ship=o.free&&sub>=o.free?0:o.p;$("#sb").textContent=money(sub);$("#sc").textContent=ship?money(ship):t("free");$("#tot2").textContent=money(sub+ship);return{opt:o,ship,grand:sub+ship}}
+addEventListener("change",e=>{if(e.target.name=="sh"){shSel=e.target.value;calc()}});
+function showP(id){const x=P.find(y=>y.id==id);if(!x)return;cur=x;const im=x.imgs;
+$("#pd").innerHTML=`<button class="x" data-close>✕</button><div class="big" id="big">${bg(im[0],x)}</div>${im.length>1?`<div class="th">${im.map((u,i)=>`<span data-g="${i}" class="${i?"":"on"}"><img src="${u}" alt=""></span>`).join("")}</div>`:""}<h2 style="margin:6px 0">${nm(x)}</h2><div class="pr">${money(x.p)}<s>${money(x.o)}</s></div><div class="mu">${t("sold")} ${(x.s||0).toLocaleString()}+</div>${info(x)}${SHIP.map(o=>`<div class="mu">🚚 ${t("s_"+o.id)} · ${o.d} ${t("days")} · ${o.p?money(o.p):t("free")}</div>`).join("")}<div class="badges"></div><button class="add" style="padding:10px" data-a="${x.id}">${t("add")}</button><button class="main" data-bn="${x.id}">${t("buyNow")}</button>`;
+fillBadges();$("#dov").classList.add("on")}
+const luhn=v=>{v=v.replace(/\D/g,"");if(v.length<13)return false;let s=0,a=0;for(let i=v.length-1;i>=0;i--){let n=+v[i];if(a){n*=2;if(n>9)n-=9}s+=n;a=!a}return s%10==0};
+$("#cn1").oninput=e=>{const v=e.target.value.replace(/\D/g,"").slice(0,16);e.target.value=v.replace(/(.{4})/g,"$1 ").trim();$("#brand").textContent=/^4/.test(v)?"VISA":/^(5[1-5]|2[2-7])/.test(v)?"Mastercard":/^3[47]/.test(v)?"AMEX":/^6/.test(v)?"Discover":""};
+const rs=f=>new Promise(res=>{const fr=new FileReader();fr.onload=()=>{const im=new Image();im.onload=()=>{const k=Math.min(1,700/Math.max(im.width,im.height)),c=document.createElement("canvas");c.width=im.width*k;c.height=im.height*k;c.getContext("2d").drawImage(im,0,0,c.width,c.height);res(c.toDataURL("image/jpeg",.78))};im.onerror=()=>res(null);im.src=fr.result};fr.readAsDataURL(f)});
 function admin(){const o=LS("aura_orders",[]);
-$("#ap").innerHTML=`<h3>➕ إضافة منتج من AliExpress</h3><div style="display:grid;gap:6px;margin:8px 0"><input class="in" id="a1" placeholder="رابط المنتج أو رقمه"><input class="in" id="a2" placeholder="اسم المنتج"><input class="in" id="a3" placeholder="رابط الصورة (اختياري)"><input class="in" id="a4" type="number" step="0.01" placeholder="سعره في AliExpress بالدولار"><select class="in" id="a5">${t("c").slice(1).map((c,i)=>`<option value="${i+1}">${c}</option>`).join("")}</select><button class="main" data-ad="add">إضافة للمتجر</button></div>
-<h3>📦 منتجاتي (${mine.length})</h3>${mine.map(x=>`<div class="row"><div>${esc(nm(x))}<br><span class="mu">AliExpress $${x.cost} ← متجرك $${(x.cost+mk(x.cost)).toFixed(2)} (ربحك $${mk(x.cost)})</span></div><button data-ad="del" data-id="${x.id}">✕</button></div>`).join("")}
+$("#ap").innerHTML=`<h3>➕ إضافة منتج من AliExpress</h3><div style="display:grid;gap:6px;margin:8px 0"><input class="in" id="a1" placeholder="رابط المنتج أو رقمه"><input class="in" id="a2" placeholder="اسم المنتج"><textarea class="in" id="a3" rows="3" placeholder="روابط الصور (رابط في كل سطر)"></textarea><input class="in" id="a6" type="file" accept="image/*" multiple><input class="in" id="a4" type="number" step="0.01" placeholder="سعره في AliExpress بالدولار"><select class="in" id="a5">${t("c").slice(1).map((c,i)=>`<option value="${i+1}">${c}</option>`).join("")}</select><textarea class="in" id="a7" rows="3" placeholder="وصف المنتج"></textarea><textarea class="in" id="a8" rows="4" placeholder="الخصائص: سطر لكل خاصية مثل&#10;اللون: أسود&#10;الوزن: 200 غ"></textarea><button class="main" data-ad="add">إضافة للمتجر</button></div>
+<h3>📦 منتجاتي (${mine.length})</h3><button class="cartbtn" style="border:1px solid var(--bd)" data-ad="hs">${LS("aura_hs",0)?"إظهار":"إخفاء"} المنتجات التجريبية</button>${mine.map(x=>`<div class="row"><div>${esc(nm(x))}<br><span class="mu">AliExpress $${x.cost} ← متجرك $${(x.cost+mk(x.cost)).toFixed(2)} (ربحك $${mk(x.cost)})</span></div><button data-ad="del" data-id="${x.id}">✕</button></div>`).join("")}
 <h3>🧾 الطلبات (${o.length})</h3>${o.map((q,i)=>`<div class="row" style="align-items:flex-start;opacity:${q.done?0.5:1}"><div><b>${esc(q.customer.name)}</b> · ${esc(q.customer.phone)}<br>${esc(q.customer.address)}<br>${q.items.map(it=>`<a href="https://www.aliexpress.com/item/${esc(it.aliId)}.html" target="_blank" rel="noopener">${esc(it.title)} ×${it.qty}</a>`).join("<br>")}<br><span class="mu">$${q.total.toFixed(2)} · ${esc(q.payment)} · ربحك $${q.items.reduce((a,it)=>a+(it.price-(it.cost||0))*it.qty,0).toFixed(2)}</span></div><button data-ad="done" data-i="${i}">${q.done?"↩":"✔"}</button></div>`).join("")}`}
-function adminAct(d){
+async function adminAct(d){
 if(d.ad=="add"){const id=($("#a1").value.match(/\d{8,}/)||[])[0],c=parseFloat($("#a4").value);if(!id||!(c>0))return alert("أدخل رابط/رقم المنتج وسعره");
-mine.push({id:"m"+Date.now(),aliId:id,n:$("#a2").value||"Product",img:$("#a3").value.trim(),cost:c,c:+$("#a5").value});SV("aura_products",mine);setP()}
+const imgs=$("#a3").value.split(/\s+/).filter(u=>/^https?:/.test(u));for(const f of $("#a6").files){const u=await rs(f);if(u)imgs.push(u)}
+mine.push({id:"m"+Date.now(),aliId:id,n:$("#a2").value||"Product",imgs,d:$("#a7").value.trim(),sp:$("#a8").value.trim(),cost:c,c:+$("#a5").value});if(!SV("aura_products",mine))alert("الذاكرة ممتلئة: قلّل عدد الصور");setP()}
+if(d.ad=="hs"){SV("aura_hs",LS("aura_hs",0)?0:1);setP()}
 if(d.ad=="del"){mine=mine.filter(x=>x.id!=d.id);SV("aura_products",mine);setP()}
 if(d.ad=="done"){const o=LS("aura_orders",[]);o[d.i].done=!o[d.i].done;SV("aura_orders",o)}
 admin()}
