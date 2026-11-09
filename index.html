@@ -88,6 +88,7 @@ footer{text-align:center;color:var(--mu);font-size:13px;padding:24px}
 <div class="cd"><i id="h">00</i><i id="m">00</i><i id="s">00</i></div></div><div class="em" id="hi"></div></div>
 <div class="feat"><div data-i="f1"></div><div data-i="f2"></div><div data-i="f3"></div><div data-i="f4"></div></div>
 <h2 data-i="deals"></h2>
+<select id="sort" class="in" style="width:auto;margin-bottom:8px"></select>
 <div class="grid" id="grid"></div>
 </div>
 <footer><div class="badges"></div>© 2026 AURA IMPEX</footer>
@@ -97,7 +98,7 @@ footer{text-align:center;color:var(--mu);font-size:13px;padding:24px}
 <button class="main" id="go" data-i="checkout"></button></div></div>
 
 <div class="ov" id="pov"><div class="mo"><button class="x" data-close>✕</button><h2 data-i="checkout"></h2>
-<input class="in" id="nm" data-ph="name"><input class="in" id="ph" data-ph="phone" type="tel"><input class="in" id="ad" data-ph="addr">
+<input class="in" id="nm" data-ph="name"><input class="in" id="ph" data-ph="phone" type="tel"><input class="in" id="ad" data-ph="addr"><input class="in" id="ci" data-ph="city"><input class="in" id="zp" data-ph="zip"><select class="in" id="co" aria-label="Country"><option value="">—</option><option value="DZ">Algeria</option><option value="MA">Morocco</option><option value="TN">Tunisia</option><option value="EG">Egypt</option><option value="LY">Libya</option><option value="SA">Saudi Arabia</option><option value="AE">United Arab Emirates</option><option value="KW">Kuwait</option><option value="QA">Qatar</option><option value="JO">Jordan</option><option value="IQ">Iraq</option><option value="TR">Turkey</option><option value="FR">France</option><option value="ES">Spain</option><option value="DE">Germany</option><option value="IT">Italy</option><option value="GB">United Kingdom</option><option value="US">United States</option><option value="CA">Canada</option></select>
 <b data-i="shipM"></b><div id="shl" style="display:grid;gap:6px"></div>
 <b data-i="payM"></b><div class="badges"></div>
 <label class="pay"><input type="radio" name="pm" value="card" checked>💳 <span data-i="pCard"></span><span id="brand"></span></label>
@@ -156,12 +157,12 @@ const F=[
 {k:"holder",c:1,n:{ar:"حامل هاتف للسيارة",en:"Car Phone Holder",fr:"Support téléphone voiture"},p:3.5,o:12,s:12000,d:{ar:"حامل هاتف للسيارة بدوران 360 درجة، يثبت الهاتف بقوة بكأس شفط أو مشبك فتحة التكييف، ويناسب أغلب الهواتف.",en:"A car phone holder with 360-degree rotation. It grips your phone firmly with a suction cup or air-vent clip and fits most phones."},sp:{ar:"الدوران: 360 درجة|يناسب هواتف: من 4 إلى 7 بوصة|التثبيت: كأس شفط أو مشبك تكييف|الخامة: ABS + سيليكون",en:"Rotation: 360 degrees|Fits phones: 4 to 7 inch|Mount: suction cup or vent clip|Material: ABS + silicone"}}];
 let remote=[],P=norm([...(LS("aura_hs",0)?[]:F),...mine]);
 const X={
-ar:{shipM:"طريقة الشحن",s_std:"شحن عادي",s_exp:"شحن سريع",s_pri:"شحن ممتاز",days:"يوم",free:"مجاني",sub:"المجموع الفرعي",shipC:"الشحن",badCard:"رقم البطاقة غير صحيح",buyNow:"اشترِ الآن",descL:"وصف المنتج",specL:"الخصائص"},
-en:{shipM:"Shipping method",s_std:"Standard shipping",s_exp:"Express shipping",s_pri:"Priority shipping",days:"days",free:"Free",sub:"Subtotal",shipC:"Shipping",badCard:"Invalid card number",buyNow:"Buy now",descL:"Description",specL:"Specifications"},
-fr:{shipM:"Mode de livraison",s_std:"Livraison standard",s_exp:"Livraison express",s_pri:"Livraison prioritaire",days:"jours",free:"Gratuit",sub:"Sous-total",shipC:"Livraison",badCard:"Numéro de carte invalide",buyNow:"Acheter",descL:"Description",specL:"Caractéristiques"}};
+ar:{shipM:"طريقة الشحن",s_std:"شحن عادي",s_exp:"شحن سريع",s_pri:"شحن ممتاز",days:"يوم",free:"مجاني",sub:"المجموع الفرعي",shipC:"الشحن",badCard:"رقم البطاقة غير صحيح",buyNow:"اشترِ الآن",city:"المدينة",zip:"الرمز البريدي",descL:"وصف المنتج",specL:"الخصائص",sortD:"الافتراضي",sortS:"الأكثر مبيعاً",sortL:"السعر: من الأقل",sortH:"السعر: من الأعلى",best:"الأكثر مبيعاً"},
+en:{shipM:"Shipping method",s_std:"Standard shipping",s_exp:"Express shipping",s_pri:"Priority shipping",days:"days",free:"Free",sub:"Subtotal",shipC:"Shipping",badCard:"Invalid card number",buyNow:"Buy now",city:"City",zip:"Postal code",descL:"Description",specL:"Specifications",sortD:"Default",sortS:"Best sellers",sortL:"Price: low to high",sortH:"Price: high to low",best:"Best seller"},
+fr:{shipM:"Mode de livraison",s_std:"Livraison standard",s_exp:"Livraison express",s_pri:"Livraison prioritaire",days:"jours",free:"Gratuit",sub:"Sous-total",shipC:"Livraison",badCard:"Numéro de carte invalide",buyNow:"Acheter",city:"Ville",zip:"Code postal",descL:"Description",specL:"Caractéristiques",sortD:"Par défaut",sortS:"Meilleures ventes",sortL:"Prix croissant",sortH:"Prix décroissant",best:"Top vente"}};
 for(const k in X)Object.assign(T[k],X[k]);
 const SHIP=[{id:"std",d:"15-25",p:2.99,free:50},{id:"exp",d:"7-12",p:6.99},{id:"pri",d:"3-7",p:14.99}];
-let L="ar",cat=0,cart={},qs="",shSel="std",sub=0,cur=null;
+let L="ar",cat=0,cart={},qs="",shSel="std",sub=0,cur=null,srt="d";
 const $=s=>document.querySelector(s),t=k=>T[L][k];
 const money=v=>"$"+v.toFixed(2);
 function render(){
@@ -169,8 +170,10 @@ document.documentElement.lang=L;document.documentElement.dir=L=="ar"?"rtl":"ltr"
 document.querySelectorAll("[data-i]").forEach(e=>e.textContent=t(e.dataset.i));
 document.querySelectorAll("[data-ph]").forEach(e=>e.placeholder=t(e.dataset.ph));
 $("#cats").innerHTML=t("c").map((c,i)=>`<span class="${i==cat?"on":""}" data-c="${i}">${c}</span>`).join("");
-const list=P.filter(x=>(!cat||x.c==cat)&&nm(x).toLowerCase().includes(qs));
-$("#grid").innerHTML=list.map(x=>`<div class="p"><div class="im" data-v="${x.id}"><img src="${x.imgs[0]}" alt="${esc(nm(x))}" loading="lazy" onerror="this.onerror=null;this.src=art('box',0)" style="width:100%;height:100%;object-fit:cover"><em>-${Math.round((1-x.p/x.o)*100)}%</em></div><div class="bd"><h3 data-v="${x.id}">${nm(x)}</h3><div class="pr">${money(x.p)}<s>${money(x.o)}</s></div><div class="mu">${t("sold")} ${(x.s||0).toLocaleString()}+</div><button class="add" data-a="${x.id}">${t("add")}</button></div></div>`).join("");
+const top=[...P].sort((a,b)=>(b.s||0)-(a.s||0)).slice(0,3).map(x=>x.id);
+$("#sort").innerHTML=[["d","sortD"],["s","sortS"],["l","sortL"],["h","sortH"]].map(([v,k])=>`<option value="${v}" ${v==srt?"selected":""}>${t(k)}</option>`).join("");
+const list=P.filter(x=>(!cat||x.c==cat)&&nm(x).toLowerCase().includes(qs)).sort((a,b)=>srt=="s"?(b.s||0)-(a.s||0):srt=="l"?a.p-b.p:srt=="h"?b.p-a.p:0);
+$("#grid").innerHTML=list.map(x=>`<div class="p"><div class="im" data-v="${x.id}"><img src="${x.imgs[0]}" alt="${esc(nm(x))}" loading="lazy" onerror="this.onerror=null;this.src=art('box',0)" style="width:100%;height:100%;object-fit:cover"><em>-${Math.round((1-x.p/x.o)*100)}%</em>${top.includes(x.id)?`<em style="top:auto;bottom:8px;background:#ff9a1a">${t("best")}</em>`:""}</div><div class="bd"><h3 data-v="${x.id}">${nm(x)}</h3><div class="pr">${money(x.p)}<s>${money(x.o)}</s></div><div class="mu">${t("sold")} ${(x.s||0).toLocaleString()}+</div><button class="add" data-a="${x.id}">${t("add")}</button></div></div>`).join("");
 $("#hi").innerHTML=`<img src="${art("bag",1)}" alt="" style="width:110px;height:110px;border-radius:18px">`;fillBadges();renderSh();cartUI()}
 function cartUI(){
 const ids=Object.keys(cart);let sum=0,n=0;
@@ -188,13 +191,14 @@ if(d.ad)adminAct(d);
 if(e.target.closest("[data-close]")||e.target.classList.contains("ov"))document.querySelectorAll(".ov").forEach(o=>o.classList.remove("on"))});
 $("#cb").onclick=()=>$("#cov").classList.add("on");
 $("#go").onclick=()=>{$("#cov").classList.remove("on");$("#pov").classList.add("on")};
+$("#sort").onchange=e=>{srt=e.target.value;render()};
 $("#lang").onchange=e=>{L=e.target.value;try{localStorage.setItem("aura_lang",L)}catch(_){}render()};
 $("#q").oninput=e=>{qs=e.target.value.toLowerCase();render()};
 document.querySelectorAll("[name=pm]").forEach(r=>r.onchange=()=>$("#card").style.display=r.value=="card"?"grid":"none");
-$("#pay").onclick=async()=>{if(!$("#nm").value||!$("#ph").value||!$("#ad").value)return alert(t("fill"));
+$("#pay").onclick=async()=>{if(!$("#nm").value||!$("#ph").value||!$("#ad").value||!$("#ci").value||!$("#zp").value||!$("#co").value)return alert(t("fill"));
 if(document.querySelector("[name=pm]:checked").value=="card"&&!luhn($("#cn1").value))return alert(t("badCard"));
 const items=Object.keys(cart).map(id=>{const x=P.find(y=>y.id==id);return{id,aliId:x.aliId,qty:cart[id],price:x.p,cost:x.cost,title:nm(x)}});
-const order={customer:{name:$("#nm").value,phone:$("#ph").value,address:$("#ad").value},payment:document.querySelector("[name=pm]:checked").value,items,shipping:calc().opt.id,shipCost:calc().ship,total:calc().grand};
+const order={customer:{name:$("#nm").value,phone:$("#ph").value,address:$("#ad").value,city:$("#ci").value,zip:$("#zp").value,country:$("#co").value},payment:document.querySelector("[name=pm]:checked").value,items,shipping:calc().opt.id,shipCost:calc().ship,total:calc().grand};
 if(CFG.WA)window.open("https://wa.me/"+CFG.WA+"?text="+encodeURIComponent("🛒 AURA IMPEX\n"+order.customer.name+" | "+order.customer.phone+"\n"+order.customer.address+"\n"+items.map(i=>i.title+" x"+i.qty+" (AliExpress "+i.aliId+")").join("\n")+"\n$"+order.total.toFixed(2)+" - "+order.payment));
 try{if(!CFG.API)throw 0;const r=await fetch(CFG.API+"/api/orders",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(order)});if(!r.ok)throw 0}
 catch(_){const q=LS("aura_orders",[]);q.push({...order,at:new Date().toLocaleString(),done:false});SV("aura_orders",q)}
@@ -218,13 +222,19 @@ $("#cn1").oninput=e=>{const v=e.target.value.replace(/\D/g,"").slice(0,16);e.tar
 const rs=f=>new Promise(res=>{const fr=new FileReader();fr.onload=()=>{const im=new Image();im.onload=()=>{const k=Math.min(1,700/Math.max(im.width,im.height)),c=document.createElement("canvas");c.width=im.width*k;c.height=im.height*k;c.getContext("2d").drawImage(im,0,0,c.width,c.height);res(c.toDataURL("image/jpeg",.78))};im.onerror=()=>res(null);im.src=fr.result};fr.readAsDataURL(f)});
 function admin(){const o=LS("aura_orders",[]);
 $("#ap").innerHTML=`<h3>➕ إضافة منتج من AliExpress</h3><div style="display:grid;gap:6px;margin:8px 0"><input class="in" id="a1" placeholder="رابط المنتج أو رقمه"><input class="in" id="a2" placeholder="اسم المنتج"><textarea class="in" id="a3" rows="3" placeholder="روابط الصور (رابط في كل سطر)"></textarea><input class="in" id="a6" type="file" accept="image/*" multiple><input class="in" id="a4" type="number" step="0.01" placeholder="سعره في AliExpress بالدولار"><select class="in" id="a5">${t("c").slice(1).map((c,i)=>`<option value="${i+1}">${c}</option>`).join("")}</select><textarea class="in" id="a7" rows="3" placeholder="وصف المنتج"></textarea><textarea class="in" id="a8" rows="4" placeholder="الخصائص: سطر لكل خاصية مثل&#10;اللون: أسود&#10;الوزن: 200 غ"></textarea><button class="main" data-ad="add">إضافة للمتجر</button></div>
-<h3>📦 منتجاتي (${mine.length})</h3><button class="cartbtn" style="border:1px solid var(--bd)" data-ad="hs">${LS("aura_hs",0)?"إظهار":"إخفاء"} المنتجات التجريبية</button>${mine.map(x=>`<div class="row"><div>${esc(nm(x))}<br><span class="mu">AliExpress $${x.cost} ← متجرك $${(x.cost+mk(x.cost)).toFixed(2)} (ربحك $${mk(x.cost)})</span></div><button data-ad="del" data-id="${x.id}">✕</button></div>`).join("")}
+<h3>📥 استيراد جماعي</h3><textarea class="in" id="b1" rows="4" placeholder="الصق CSV أو JSON. كل سطر: رقم المنتج,الاسم,السعر,المبيعات,رابط صورة|رابط صورة,الوصف"></textarea><button class="main" data-ad="imp">استيراد</button>
+<h3>📦 منتجاتي (${mine.length})</h3><button class="cartbtn" style="border:1px solid var(--bd)" data-ad="exp">نسخ منتجاتي JSON</button> <button class="cartbtn" style="border:1px solid var(--bd)" data-ad="hs">${LS("aura_hs",0)?"إظهار":"إخفاء"} المنتجات التجريبية</button>${mine.map(x=>`<div class="row"><div>${esc(nm(x))}<br><span class="mu">AliExpress $${x.cost} ← متجرك $${(x.cost+mk(x.cost)).toFixed(2)} (ربحك $${mk(x.cost)})</span></div><button data-ad="del" data-id="${x.id}">✕</button></div>`).join("")}
 <h3>🧾 الطلبات (${o.length})</h3>${o.map((q,i)=>`<div class="row" style="align-items:flex-start;opacity:${q.done?0.5:1}"><div><b>${esc(q.customer.name)}</b> · ${esc(q.customer.phone)}<br>${esc(q.customer.address)}<br>${q.items.map(it=>`<a href="https://www.aliexpress.com/item/${esc(it.aliId)}.html" target="_blank" rel="noopener">${esc(it.title)} ×${it.qty}</a>`).join("<br>")}<br><span class="mu">$${q.total.toFixed(2)} · ${esc(q.payment)} · ربحك $${q.items.reduce((a,it)=>a+(it.price-(it.cost||0))*it.qty,0).toFixed(2)}</span></div><button data-ad="done" data-i="${i}">${q.done?"↩":"✔"}</button></div>`).join("")}`}
+function imp(txt){let a=[];txt=txt.trim();
+try{if(txt[0]=="[")a=JSON.parse(txt).map(o=>({aliId:String(o.aliId||o.id||""),n:o.n||o.title||"Product",cost:+(o.cost??o.price),s:+(o.s??o.sold)||0,imgs:o.imgs||o.images||[],d:o.d||o.description||"",sp:o.sp||o.specs||"",c:+o.c||0}));
+else a=txt.split(/\n/).filter(l=>l.trim()).map(l=>{const f=l.split(l.includes("\t")?"\t":",").map(z=>z.trim());return{aliId:(f[0].match(/\d{8,}/)||[""])[0],n:f[1]||"Product",cost:parseFloat(f[2]),s:parseInt(f[3])||0,imgs:(f[4]||"").split("|").filter(u=>/^https?:/.test(u)),d:f[5]||"",sp:"",c:0}})}catch(_){return -1}
+a=a.filter(x=>x.aliId&&x.cost>0);a.forEach((x,i)=>mine.push({...x,id:"m"+Date.now()+i}));return a.length}
 async function adminAct(d){
 if(d.ad=="add"){const id=($("#a1").value.match(/\d{8,}/)||[])[0],c=parseFloat($("#a4").value);if(!id||!(c>0))return alert("أدخل رابط/رقم المنتج وسعره");
 const imgs=$("#a3").value.split(/\s+/).filter(u=>/^https?:/.test(u));for(const f of $("#a6").files){const u=await rs(f);if(u)imgs.push(u)}
 mine.push({id:"m"+Date.now(),aliId:id,n:$("#a2").value||"Product",imgs,d:$("#a7").value.trim(),sp:$("#a8").value.trim(),cost:c,c:+$("#a5").value});if(!SV("aura_products",mine))alert("الذاكرة ممتلئة: قلّل عدد الصور");setP()}
-if(d.ad=="hs"){SV("aura_hs",LS("aura_hs",0)?0:1);setP()}
+if(d.ad=="exp"){navigator.clipboard?.writeText(JSON.stringify(mine));alert("تم نسخ منتجاتك JSON")}if(d.ad=="hs"){SV("aura_hs",LS("aura_hs",0)?0:1);setP()}
+if(d.ad=="imp"){const n=imp($("#b1").value);if(n<0)alert("تنسيق غير صحيح");else{SV("aura_products",mine);setP();alert(n+" ✔")}}
 if(d.ad=="del"){mine=mine.filter(x=>x.id!=d.id);SV("aura_products",mine);setP()}
 if(d.ad=="done"){const o=LS("aura_orders",[]);o[d.i].done=!o[d.i].done;SV("aura_orders",o)}
 admin()}
