@@ -1,173 +1,137 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>AURA IMPEX</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&family=Fraunces:wght@500;600&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#090909;--panel:#151515;--text:#f6f0e4;--muted:#aaa18f;--gold:#c9a45c;--line:#332b1e}
-body.light{--bg:#f7f4ed;--panel:#fff;--text:#19150d;--muted:#706858;--line:#e4dac8}
-*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:16px Tahoma,Arial,sans-serif;line-height:1.6}
-header{position:sticky;top:0;background:var(--bg);border-bottom:1px solid var(--line);z-index:3;padding:14px 5%;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
-.logo{font-weight:900;letter-spacing:2px;color:var(--gold);font-size:22px}.tools{display:flex;gap:8px;align-items:center}
-button,select{font:inherit;cursor:pointer;border:1px solid var(--gold);border-radius:8px;padding:8px 12px;background:transparent;color:var(--text)}
-select option{color:#111}.gold{background:var(--gold);color:#111;font-weight:bold;border:0}
-#cartBtn{display:inline-flex;align-items:center;gap:6px}#cartBtn svg{width:20px;height:20px}
-main{max-width:1100px;margin:auto;padding:24px 5%}
-.hero{border:1px solid var(--line);border-radius:18px;padding:34px 24px;background:linear-gradient(125deg,#211b10,#090909);margin:18px 0 28px}
-body.light .hero{background:linear-gradient(125deg,#efe2c3,#fff)}
-.hero small{color:var(--gold);letter-spacing:2px}.hero h1{font-size:clamp(28px,5vw,48px);margin:8px 0}.hero p{color:var(--muted);max-width:650px}
-h2{color:var(--gold);margin-top:30px}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:18px}
-.card{background:var(--panel);border:1px solid var(--line);border-radius:15px;overflow:hidden;display:flex;flex-direction:column}
-.visual{height:230px;background:#fff;display:grid;place-items:center}
-.visual img{width:100%;height:100%;object-fit:contain;padding:12px;display:block}
-.info{padding:16px;display:flex;flex-direction:column;flex:1}.tag{color:var(--gold);font-size:13px}.price{font-size:24px;color:var(--gold);font-weight:bold}.muted{color:var(--muted);font-size:13px}
-.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:auto;padding-top:14px;align-items:center}.actions button{flex:1}
-#cart{position:fixed;inset:0;background:#0009;display:none;z-index:5;align-items:center;justify-content:center;padding:15px}
-#cart.open{display:flex}.modal{background:var(--panel);border:1px solid var(--gold);border-radius:15px;padding:20px;width:min(460px,100%);max-height:90vh;overflow:auto}
-.modal h2{margin-top:0}.close{float:left}
-.cartline{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--line)}
-.cartline img{width:52px;height:52px;object-fit:contain;background:#fff;border-radius:8px;flex:none}
-.cartline .nm{flex:1;font-size:14px}
-.qtybox{display:flex;align-items:center;gap:6px}.qtybox button{padding:2px 9px;line-height:1.3}
-footer{text-align:center;color:var(--muted);padding:30px 12px;border-top:1px solid var(--line);margin-top:40px}
-a{color:var(--gold)}.notice{border:1px solid var(--line);padding:12px;border-radius:10px;color:var(--muted);font-size:13px;margin-top:18px}
+:root{--bg:#f6f3ee;--surf:#fff;--ink:#14272b;--mut:#5d6b6e;--line:#e3ded4;--acc:#0f4c52;--gold:#b8893b;--on:#fff;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0e1a1c;--surf:#16272a;--ink:#eef0ee;--mut:#9fb0b2;--line:#27393c;--acc:#5fb3b8;--on:#08181a}}
+:root[data-theme="dark"]{--bg:#0e1a1c;--surf:#16272a;--ink:#eef0ee;--mut:#9fb0b2;--line:#27393c;--acc:#5fb3b8;--on:#08181a}
+*{box-sizing:border-box}html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 16px/1.6 Cairo,Inter,system-ui,sans-serif}
+h1,h2,.logo{font-family:Fraunces,Cairo,serif;font-weight:600;letter-spacing:-.01em}
+button{font:inherit;cursor:pointer}
+:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+.wrap{max-width:1180px;margin:0 auto;padding:0 20px}
+.bar{background:var(--acc);color:var(--on);text-align:center;font-size:13px;padding:6px 12px}
+header{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);border-bottom:1px solid var(--line)}
+.nav{display:flex;align-items:center;gap:16px;height:64px}
+.logo{font-size:24px;margin-inline-end:auto;color:var(--ink);text-decoration:none}
+.logo b{color:var(--gold)}
+.lang{display:flex;border:1px solid var(--line);border-radius:999px;overflow:hidden}
+.lang button{background:none;border:0;color:var(--mut);padding:4px 12px;font-size:13px}
+.lang button[aria-pressed=true]{background:var(--acc);color:var(--on)}
+.cartbtn{background:var(--ink);color:var(--bg);border:0;border-radius:999px;padding:8px 16px;font-weight:600}
+.hero{display:grid;grid-template-columns:1.1fr .9fr;gap:40px;align-items:center;padding:64px 0}
+.hero h1{font-size:clamp(34px,5vw,58px);line-height:1.1;margin:0 0 16px}
+.hero p{color:var(--mut);max-width:46ch;margin:0 0 28px;font-size:18px}
+.btn{background:var(--acc);color:var(--on);border:0;border-radius:8px;padding:12px 26px;font-weight:700}
+.btn.o{background:none;color:var(--ink);border:1px solid var(--ink);margin-inline-start:8px}
+.art{aspect-ratio:1/1;border-radius:24px;background:linear-gradient(135deg,var(--acc),#0a2f33 70%);position:relative;overflow:hidden}
+.art::after{content:"AURA";position:absolute;inset:auto 24px 16px auto;font:600 90px Fraunces,serif;color:var(--gold);opacity:.85}
+.trust{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;border-block:1px solid var(--line);padding:18px 0;font-size:14px;color:var(--mut);text-align:center}
+.trust b{display:block;color:var(--ink)}
+h2{font-size:30px;margin:56px 0 18px}
+.cats{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px}
+.chip{border:1px solid var(--line);background:var(--surf);color:var(--ink);border-radius:999px;padding:6px 16px}
+.chip[aria-pressed=true]{background:var(--ink);color:var(--bg)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:20px}
+.card{background:var(--surf);border:1px solid var(--line);border-radius:14px;overflow:hidden;display:flex;flex-direction:column}
+.ph{aspect-ratio:4/3;display:grid;place-items:center;font:600 44px Fraunces,serif;color:var(--gold)}
+.cb{padding:14px 16px 16px;display:flex;flex-direction:column;gap:4px;flex:1}
+.cb small{color:var(--mut)}.price{font-weight:700;margin-top:auto;padding-top:8px}
+.add{margin-top:10px;background:none;border:1px solid var(--acc);color:var(--acc);border-radius:8px;padding:8px;font-weight:700}
+.add:hover{background:var(--acc);color:var(--on)}
+footer{margin-top:72px;border-top:1px solid var(--line);padding:32px 0;color:var(--mut);font-size:14px;display:flex;flex-wrap:wrap;gap:16px;justify-content:space-between}
+.drawer{position:fixed;inset:0;z-index:20;display:none;background:rgba(0,0,0,.45)}
+.drawer.on{display:block}
+.panel{position:absolute;top:0;bottom:0;inset-inline-end:0;width:min(420px,100%);background:var(--bg);padding:22px;display:flex;flex-direction:column;gap:12px;overflow:auto}
+.row{display:flex;gap:10px;align-items:center;justify-content:space-between;border-bottom:1px solid var(--line);padding:8px 0}
+.row button{border:1px solid var(--line);background:var(--surf);color:var(--ink);border-radius:6px;width:28px;height:28px}
+select{width:100%;padding:10px;border-radius:8px;border:1px solid var(--line);background:var(--surf);color:var(--ink);font:inherit}
+.pay{display:flex;flex-wrap:wrap;gap:6px;font-size:13px;color:var(--mut)}
+.pay span{border:1px solid var(--line);border-radius:6px;padding:2px 8px}
+.tot{display:flex;justify-content:space-between;font-weight:700;font-size:18px}
+@media(max-width:760px){.hero{grid-template-columns:1fr;padding:36px 0}.art{display:none}.trust{grid-template-columns:1fr 1fr}}
+@media(prefers-reduced-motion:no-preference){.art{animation:in .9s ease both}@keyframes in{from{opacity:0;transform:scale(.97)}}}
 </style>
 </head>
 <body>
-<header>
-  <div class="logo">AURA IMPEX</div>
-  <div class="tools">
-    <select id="lang" aria-label="Language"><option value="ar">العربية</option><option value="fr">Français</option><option value="en">English</option></select>
-    <button id="theme" aria-label="Theme">◐</button>
-    <button id="cartBtn" aria-label="Cart">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.7 13.4a2 2 0 0 0 2 1.6h9.7a2 2 0 0 0 2-1.6L23 6H6"/></svg>
-      <span id="cartCount">0</span>
-    </button>
-  </div>
-</header>
-<main>
-  <section class="hero">
-    <small data-i18n="eyebrow"></small>
-    <h1 data-i18n="headline"></h1>
-    <p data-i18n="subhead"></p>
-  </section>
-  <h2 data-i18n="sectionTitle"></h2>
-  <section class="grid" id="products"></section>
-  <div class="notice" data-i18n="notice"></div>
+<div class="bar" id="bar"></div>
+<header><div class="wrap nav">
+<a class="logo" href="#">AURA <b>IMPEX</b></a>
+<div class="lang" role="group" aria-label="Language">
+<button data-l="ar" aria-pressed="true">العربية</button><button data-l="en" aria-pressed="false">EN</button><button data-l="fr" aria-pressed="false">FR</button></div>
+<button class="cartbtn" id="open"><span data-t="cart"></span> (<span id="n">0</span>)</button>
+</div></header>
+
+<main class="wrap">
+<section class="hero">
+<div><h1 data-t="h1"></h1><p data-t="sub"></p>
+<button class="btn" onclick="document.getElementById('shop').scrollIntoView({behavior:'smooth'})" data-t="shop"></button>
+<button class="btn o" data-t="contact"></button></div>
+<div class="art" role="img" aria-label="AURA IMPEX"></div>
+</section>
+<div class="trust"><div><b data-t="t1"></b><span data-t="t1d"></span></div><div><b data-t="t2"></b><span data-t="t2d"></span></div><div><b data-t="t3"></b><span data-t="t3d"></span></div><div><b data-t="t4"></b><span data-t="t4d"></span></div></div>
+
+<h2 id="shop" data-t="prod"></h2>
+<div class="cats" id="cats"></div>
+<div class="grid" id="grid"></div>
 </main>
-<footer>© 2026 AURA IMPEX</footer>
-<div id="cart">
-  <div class="modal">
-    <button class="close" id="close">✕</button>
-    <h2 data-i18n="cartTitle"></h2>
-    <div id="cartLines"></div>
-    <p><strong data-i18n="totalLabel"></strong> <span class="price" id="total">$0.00</span></p>
-    <p class="muted" data-i18n="cartNote"></p>
-    <button class="gold" id="continue" data-i18n="continue"></button>
-  </div>
-</div>
+
+<footer class="wrap"><span>© 2026 AURA IMPEX</span><div class="pay"><span>Visa / Mastercard</span><span>PayPal</span><span>Apple Pay</span><span>Google Pay</span><span data-t="cod"></span><span data-t="bank"></span></div></footer>
+
+<div class="drawer" id="dr"><div class="panel" role="dialog" aria-modal="true">
+<div class="row" style="border:0"><h2 style="margin:0;font-size:22px" data-t="cart"></h2><button id="close" aria-label="Close">✕</button></div>
+<div id="items"></div>
+<label for="ctry" data-t="ship"></label><select id="ctry"></select>
+<div class="tot"><span data-t="total"></span><span id="tot">0</span></div>
+<button class="btn" id="co" data-t="checkout"></button>
+<div class="pay"><span>Visa</span><span>PayPal</span><span>Apple Pay</span><span>Google Pay</span><span data-t="cod"></span></div>
+<p id="msg" style="color:var(--acc);margin:0" role="status"></p>
+</div></div>
+
 <script>
-/* ============ المنتجات / PRODUCTS ============
-   لإضافة منتج جديد: انسخ كتلة {...} كاملة وضعها بعد الأخيرة (لا تنس الفاصلة).
-   الصورة: رابط خارجي، أو مسار ملف داخل المستودع مثل "images/product2.jpg"
-*/
-const products=[
-  {
-    id:"car-holder-360",
-    img:"https://images.nexusapp.co/assets/cd/9a/40/369494180.jpg",
-    price:3.99,
-    supplier:"https://www.aliexpress.com/item/1005013105947959.html",
-    tag:{ar:"إكسسوارات السيارات",en:"Car accessories",fr:"Accessoires auto"},
-    name:{ar:"حامل هاتف للسيارة 360°",en:"360° Car Phone Holder",fr:"Support téléphone voiture 360°"},
-    desc:{
-      ar:"حامل هاتف قابل للدوران 360 درجة لتثبيت الهاتف داخل السيارة وضبط زاوية الرؤية.",
-      en:"A rotating 360-degree phone holder for use inside your car, with an adjustable viewing angle.",
-      fr:"Support de téléphone rotatif à 360° pour voiture, avec angle de vision réglable."
-    }
-  }
-  /* ,{
-    id:"product-2",
-    img:"images/product2.jpg",
-    price:0.00,
-    supplier:"",
-    tag:{ar:"",en:"",fr:""},
-    name:{ar:"",en:"",fr:""},
-    desc:{ar:"",en:"",fr:""}
-  } */
-];
-
-const ui={
-ar:{eyebrow:"اختيارات منتقاة بعناية",headline:"الفخامة في التفاصيل",subhead:"اكتشف منتجات عملية بتصميم أنيق وأسعار واضحة، مع تجربة تسوق بسيطة وآمنة.",sectionTitle:"اختيار الأسبوع",margin:"سعر عرض مقترح — السعر النهائي للمورد والشحن يحتاجان إلى تأكيد.",add:"أضف إلى السلة",supplier:"صفحة المورد على AliExpress ↗",notice:"تنبيه: سعر المورد المرجعي الذي تم العثور عليه سابقاً هو 2.39$ وقد يتغير. سعر العرض 3.99$ يعطي هامشاً إجمالياً نظرياً 1.60$ قبل الشحن والرسوم. تحقق من السعر والتوفر والشحن إلى الجزائر قبل تأكيد أي طلب. هذا المتجر لا يعالج مدفوعات البطاقات.",cartTitle:"سلة التسوق",totalLabel:"المجموع:",cartNote:"هذه سلة تجريبية؛ تواصل مع المتجر لتأكيد السعر والتوصيل قبل الشراء.",continue:"متابعة التسوق",empty:"السلة فارغة"},
-en:{eyebrow:"Carefully selected finds",headline:"Luxury in the details",subhead:"Discover practical products with elegant design, clear pricing and a simple shopping experience.",sectionTitle:"Weekly pick",margin:"Suggested display price — confirm supplier price and shipping before ordering.",add:"Add to cart",supplier:"View supplier on AliExpress ↗",notice:"Note: the previously found supplier reference price was $2.39 and may change. The $3.99 display price gives a theoretical gross margin of $1.60 before shipping and fees. Confirm price, stock and shipping to Algeria before accepting an order. This store does not process card payments.",cartTitle:"Shopping cart",totalLabel:"Total:",cartNote:"Demo cart only. Contact the store to confirm price and delivery before purchase.",continue:"Continue shopping",empty:"Your cart is empty"},
-fr:{eyebrow:"Sélection soigneusement choisie",headline:"Le luxe dans les détails",subhead:"Découvrez des produits pratiques au design élégant, avec des prix clairs et une expérience simple.",sectionTitle:"Le choix de la semaine",margin:"Prix affiché suggéré — confirmez le prix fournisseur et la livraison avant commande.",add:"Ajouter au panier",supplier:"Voir le fournisseur sur AliExpress ↗",notice:"Note : le prix fournisseur de référence trouvé précédemment était de 2,39 $ et peut changer. Le prix affiché de 3,99 $ donne une marge brute théorique de 1,60 $ avant livraison et frais. Vérifiez le prix, le stock et la livraison vers l'Algérie avant toute commande. Le site ne traite pas les paiements par carte.",cartTitle:"Panier",totalLabel:"Total :",cartNote:"Panier de démonstration. Contactez le magasin pour confirmer le prix et la livraison avant achat.",continue:"Continuer",empty:"Votre panier est vide"}
-};
-
-let lang="ar";
-const cart={}; // id -> quantité
-const $=id=>document.getElementById(id);
-const esc=s=>String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
-
-function renderProducts(){
-  const t=ui[lang];
-  $("products").innerHTML=products.map(p=>`
-    <article class="card">
-      <div class="visual"><img src="${esc(p.img)}" alt="${esc(p.name[lang])}" loading="lazy"></div>
-      <div class="info">
-        <div class="tag">${esc(p.tag[lang])}</div>
-        <h3>${esc(p.name[lang])}</h3>
-        <p class="muted">${esc(p.desc[lang])}</p>
-        <div class="price">US $${p.price.toFixed(2)}</div>
-        <div class="muted">${esc(t.margin)}</div>
-        <div class="actions">
-          <button class="gold" data-add="${esc(p.id)}">${esc(t.add)}</button>
-          ${p.supplier?`<a href="${esc(p.supplier)}" target="_blank" rel="noopener">${esc(t.supplier)}</a>`:""}
-        </div>
-      </div>
-    </article>`).join("");
+const T={
+ar:{bar:"شحن دولي إلى أكثر من 19 دولة · دفع آمن",cart:"السلة",h1:"استيراد وتصدير بمعايير عالمية",sub:"منتجات مختارة بعناية، أسعار شفافة، وتوصيل موثوق إلى باب منزلك.",shop:"تسوّق الآن",contact:"تواصل معنا",t1:"شحن دولي",t1d:"19 وجهة",t2:"دفع آمن",t2d:"بطاقات · PayPal · Apple Pay",t3:"ضمان الجودة",t3d:"فحص قبل الشحن",t4:"دعم 7/7",t4d:"عربي · English · Français",prod:"المنتجات",all:"الكل",add:"أضف إلى السلة",ship:"بلد التوصيل",total:"المجموع",checkout:"إتمام الطلب",empty:"سلتك فارغة. أضف منتجاً للبدء.",cod:"الدفع عند الاستلام",bank:"تحويل بنكي",done:"تم استلام طلبك. سنتواصل معك للتأكيد.",cur:"د.ج"},
+en:{bar:"Worldwide shipping to 19+ countries · Secure payment",cart:"Cart",h1:"Import and export, at a global standard",sub:"Carefully selected products, transparent pricing and reliable delivery to your door.",shop:"Shop now",contact:"Contact us",t1:"Global shipping",t1d:"19 destinations",t2:"Secure payment",t2d:"Cards · PayPal · Apple Pay",t3:"Quality assured",t3d:"Checked before dispatch",t4:"7/7 support",t4d:"العربية · English · Français",prod:"Products",all:"All",add:"Add to cart",ship:"Shipping country",total:"Total",checkout:"Place order",empty:"Your cart is empty. Add a product to start.",cod:"Cash on delivery",bank:"Bank transfer",done:"Order received. We will contact you to confirm.",cur:"DZD"},
+fr:{bar:"Livraison dans plus de 19 pays · Paiement sécurisé",cart:"Panier",h1:"Import-export aux standards internationaux",sub:"Produits sélectionnés, prix transparents et livraison fiable jusqu'à votre porte.",shop:"Acheter",contact:"Nous contacter",t1:"Livraison mondiale",t1d:"19 destinations",t2:"Paiement sécurisé",t2d:"Cartes · PayPal · Apple Pay",t3:"Qualité garantie",t3d:"Contrôle avant expédition",t4:"Support 7j/7",t4d:"العربية · English · Français",prod:"Produits",all:"Tous",add:"Ajouter au panier",ship:"Pays de livraison",total:"Total",checkout:"Commander",empty:"Votre panier est vide. Ajoutez un produit.",cod:"Paiement à la livraison",bank:"Virement bancaire",done:"Commande reçue. Nous vous contacterons pour confirmer.",cur:"DZD"}};
+const C={ar:["الجزائر","المغرب","تونس","مصر","ليبيا","السعودية","الإمارات","الكويت","قطر","الأردن","العراق","تركيا","فرنسا","إسبانيا","ألمانيا","إيطاليا","المملكة المتحدة","الولايات المتحدة","كندا"],en:["Algeria","Morocco","Tunisia","Egypt","Libya","Saudi Arabia","United Arab Emirates","Kuwait","Qatar","Jordan","Iraq","Turkey","France","Spain","Germany","Italy","United Kingdom","United States","Canada"],fr:["Algérie","Maroc","Tunisie","Égypte","Libye","Arabie saoudite","Émirats arabes unis","Koweït","Qatar","Jordanie","Irak","Turquie","France","Espagne","Allemagne","Italie","Royaume-Uni","États-Unis","Canada"]};
+// Sample products: replace names, categories and prices with your real catalogue.
+const P=[{id:1,c:0,p:4500,n:{ar:"منتج مميز 1",en:"Signature item 1",fr:"Article signature 1"}},{id:2,c:0,p:6200,n:{ar:"منتج مميز 2",en:"Signature item 2",fr:"Article signature 2"}},{id:3,c:1,p:3200,n:{ar:"إلكترونيات 1",en:"Electronics 1",fr:"Électronique 1"}},{id:4,c:1,p:8900,n:{ar:"إلكترونيات 2",en:"Electronics 2",fr:"Électronique 2"}},{id:5,c:2,p:2100,n:{ar:"منزل 1",en:"Home 1",fr:"Maison 1"}},{id:6,c:2,p:5400,n:{ar:"منزل 2",en:"Home 2",fr:"Maison 2"}}];
+const CAT={ar:["مختارات","إلكترونيات","المنزل"],en:["Featured","Electronics","Home"],fr:["Sélection","Électronique","Maison"]};
+let L="ar",f=-1,cart={};
+const $=s=>document.querySelector(s),fmt=v=>v.toLocaleString(L==="ar"?"ar-DZ":L)+" "+T[L].cur;
+function render(){
+ document.documentElement.lang=L;document.documentElement.dir=L==="ar"?"rtl":"ltr";
+ document.querySelectorAll("[data-t]").forEach(e=>e.textContent=T[L][e.dataset.t]);
+ $("#bar").textContent=T[L].bar;
+ document.querySelectorAll(".lang button").forEach(b=>b.setAttribute("aria-pressed",b.dataset.l===L));
+ $("#cats").innerHTML=[T[L].all,...CAT[L]].map((n,i)=>`<button class="chip" data-f="${i-1}" aria-pressed="${f===i-1}">${n}</button>`).join("");
+ $("#grid").innerHTML=P.filter(p=>f<0||p.c===f).map(p=>`<article class="card"><div class="ph" style="background:hsl(${p.id*47},18%,${p.id%2?'90%':'84%'});">${p.n[L][0]}</div><div class="cb"><small>${CAT[L][p.c]}</small><strong>${p.n[L]}</strong><span class="price">${fmt(p.p)}</span><button class="add" data-a="${p.id}">${T[L].add}</button></div></article>`).join("");
+ const cur=$("#ctry").value||0;$("#ctry").innerHTML=C[L].map((c,i)=>`<option value="${i}">${c}</option>`).join("");$("#ctry").value=cur;
+ cartUI();
 }
-
-function renderCart(){
-  const t=ui[lang];
-  let count=0,total=0,html="";
-  products.forEach(p=>{
-    const q=cart[p.id]||0; if(!q) return;
-    count+=q; total+=q*p.price;
-    html+=`<div class="cartline">
-      <img src="${esc(p.img)}" alt="">
-      <span class="nm">${esc(p.name[lang])}</span>
-      <span class="qtybox"><button data-dec="${esc(p.id)}">−</button><strong>${q}</strong><button data-inc="${esc(p.id)}">+</button></span>
-    </div>`;
-  });
-  $("cartLines").innerHTML=html||`<p class="muted">${esc(t.empty)}</p>`;
-  $("cartCount").textContent=count;
-  $("total").textContent="$"+total.toFixed(2);
+function cartUI(){
+ const ids=Object.keys(cart);let t=0,n=0;
+ $("#items").innerHTML=ids.length?ids.map(id=>{const p=P.find(x=>x.id==id),q=cart[id];t+=p.p*q;n+=q;return `<div class="row"><span>${p.n[L]}<br><small>${fmt(p.p)}</small></span><span><button data-d="${id}" aria-label="−">−</button> ${q} <button data-a="${id}" aria-label="+">+</button></span></div>`}).join(""):`<p style="color:var(--mut)">${T[L].empty}</p>`;
+ $("#n").textContent=n;$("#tot").textContent=fmt(t);
 }
-
-function renderLang(){
-  const t=ui[lang];
-  document.documentElement.lang=lang;
-  document.documentElement.dir=lang==="ar"?"rtl":"ltr";
-  document.querySelectorAll("[data-i18n]").forEach(el=>el.textContent=t[el.dataset.i18n]);
-  renderProducts();renderCart();
-}
-
-$("lang").addEventListener("change",e=>{lang=e.target.value;renderLang()});
-$("theme").addEventListener("click",()=>document.body.classList.toggle("light"));
-$("products").addEventListener("click",e=>{
-  const id=e.target.dataset.add; if(!id) return;
-  cart[id]=(cart[id]||0)+1; renderCart();
+document.addEventListener("click",e=>{
+ const b=e.target.closest("button");if(!b)return;
+ if(b.dataset.l){L=b.dataset.l;render()}
+ if(b.dataset.f!==undefined&&b.classList.contains("chip")){f=+b.dataset.f;render()}
+ if(b.dataset.a){cart[b.dataset.a]=(cart[b.dataset.a]||0)+1;cartUI();if(b.classList.contains("add"))$("#dr").classList.add("on")}
+ if(b.dataset.d){if(--cart[b.dataset.d]<=0)delete cart[b.dataset.d];cartUI()}
 });
-$("cartLines").addEventListener("click",e=>{
-  const inc=e.target.dataset.inc, dec=e.target.dataset.dec;
-  if(inc) cart[inc]=(cart[inc]||0)+1;
-  if(dec){cart[dec]=(cart[dec]||0)-1; if(cart[dec]<=0) delete cart[dec];}
-  renderCart();
-});
-$("cartBtn").addEventListener("click",()=>$("cart").classList.add("open"));
-$("close").addEventListener("click",()=>$("cart").classList.remove("open"));
-$("continue").addEventListener("click",()=>$("cart").classList.remove("open"));
-renderLang();
+$("#open").onclick=()=>$("#dr").classList.add("on");
+$("#close").onclick=()=>$("#dr").classList.remove("on");
+$("#dr").onclick=e=>{if(e.target.id==="dr")e.currentTarget.classList.remove("on")};
+$("#co").onclick=()=>{if(Object.keys(cart).length){cart={};cartUI();$("#msg").textContent=T[L].done}};
+render();
 </script>
 </body>
 </html>
