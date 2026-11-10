@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AURA IMPEX</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#10302f;--bg:#f6f8f7;--card:#fff;--line:#dde5e3;--acc:#e0911a;--mut:#5d716f}
+*{box-sizing:border-box}
+body{margin:0;font-family:Cairo,system-ui,sans-serif;background:var(--bg);color:var(--ink);line-height:1.6}
+header{background:var(--ink);color:#fff;padding:14px 18px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:5}
+header h1{margin:0;font-size:1.3rem;font-weight:800;letter-spacing:.04em}
+button{font:inherit;cursor:pointer}
+.cartbtn{background:var(--acc);border:0;color:#1b1200;font-weight:700;padding:8px 16px;border-radius:8px}
+main{max-width:1000px;margin:auto;padding:18px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:16px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;overflow:hidden;display:flex;flex-direction:column}
+.card img,.ph{width:100%;aspect-ratio:1/1;object-fit:cover;display:block;background:#e7eeec}
+.ph{display:flex;align-items:center;justify-content:center;font-weight:800;color:#fff;padding:16px;text-align:center;font-size:1.2rem}
+.body{padding:14px;display:flex;flex-direction:column;gap:8px;flex:1}
+.body h3{margin:0;font-size:1.05rem}
+.body p{margin:0;color:var(--mut);font-size:.9rem}
+.body ul{margin:0;padding:0 18px 0 0;font-size:.88rem}
+.price{font-weight:800;font-size:1.2rem;margin-top:auto}
+.add{background:var(--ink);color:#fff;border:0;padding:10px;border-radius:8px;font-weight:600}
+dialog{border:0;border-radius:14px;padding:0;width:min(520px,94vw);max-height:92vh}
+dialog::backdrop{background:rgba(0,0,0,.5)}
+.dlg{padding:18px;display:flex;flex-direction:column;gap:10px}
+.dlg h2{margin:0}
+.row{display:flex;justify-content:space-between;gap:8px;align-items:center;border-bottom:1px solid var(--line);padding:6px 0}
+.qty button{width:28px;height:28px;border-radius:6px;border:1px solid var(--line);background:#fff}
+input,select,textarea{font:inherit;padding:10px;border:1px solid var(--line);border-radius:8px;width:100%}
+label{font-size:.9rem;font-weight:600}
+.opt{display:flex;gap:8px;align-items:center;font-weight:400}
+.opt input{width:auto}
+.total{font-size:1.15rem;font-weight:800;display:flex;justify-content:space-between}
+.go{background:var(--acc);border:0;padding:12px;border-radius:8px;font-weight:800;color:#1b1200}
+.x{align-self:flex-start;background:none;border:0;font-size:1.3rem}
+.msg{padding:10px;border-radius:8px;background:#e6f3ec;display:none}
+footer{text-align:center;color:var(--mut);padding:24px;font-size:.85rem}
+</style>
+</head>
+<body>
+<header><h1>AURA IMPEX</h1><button class="cartbtn" id="openCart">السلة (<span id="cnt">0</span>)</button></header>
+<main><div class="grid" id="grid"></div></main>
+<footer>© 2026 AURA IMPEX</footer>
+
+<dialog id="dlg"><div class="dlg">
+<button class="x" id="close">×</button>
+<h2>سلة المشتريات</h2>
+<div id="items"></div>
+<div id="checkout" style="display:none;flex-direction:column;gap:10px">
+ <label>الاسم الكامل<input id="name"></label>
+ <label>رقم الهاتف<input id="phone" type="tel"></label>
+ <label>البلد<select id="country"></select></label>
+ <label>العنوان الكامل<textarea id="addr" rows="2"></textarea></label>
+ <label>طريقة الشحن</label>
+ <div id="ship"></div>
+ <label>طريقة الدفع</label>
+ <div id="pay"></div>
+ <div class="total"><span>المجموع</span><span id="total">0</span></div>
+ <button class="go" id="send">تأكيد الطلب</button>
+ <div class="msg" id="msg"></div>
+</div>
+</div></dialog>
+
+<script>
+/* ======== الإعدادات: عدّلها أنت ======== */
+var CONFIG={
+  currency:"USD",
+  whatsapp:"213000000000",          // رقمك مع رمز الدولة بدون +
+  formEndpoint:"",                  // اختياري: رابط Formspree لاستلام الطلبات في بريدك
+  paypalMe:"",                      // اختياري: مثال paypal.me/اسمك
+  bankInfo:"ضع هنا بيانات حسابك البنكي أو CCP"
+};
+var SHIPPING={ // سعر الشحن حسب البلد: [عادي, سريع]
+  "الجزائر":[4,9],"المغرب":[5,11],"تونس":[5,11],"مصر":[6,12],"السعودية":[8,15],
+  "الإمارات":[8,15],"فرنسا":[9,18],"إسبانيا":[9,18],"ألمانيا":[10,19],"الولايات المتحدة":[12,25],"دول أخرى":[14,28]
+};
+var SHIPMETH=[["عادي (10 إلى 25 يوم)",0],["سريع (5 إلى 12 يوم)",1]];
+var PAYMETH=[["الدفع عند الاستلام","cod"],["PayPal","paypal"],["تحويل بنكي","bank"]];
+/* ======== المنتجات: ضع رابط صورة حقيقية في img ======== */
+var PRODUCTS=[
+ {id:1,name:"ساعة ذكية Pro",price:24.9,img:"",color:"#10302f",desc:"ساعة ذكية بشاشة AMOLED لمتابعة النشاط والإشعارات.",feat:["بطارية تدوم 7 أيام","مقاومة للماء IP68","قياس نبض القلب والنوم"]},
+ {id:2,name:"سماعات لاسلكية",price:17.5,img:"",color:"#3b4a6b",desc:"سماعات بلوتوث بصوت نقي وعزل للضوضاء.",feat:["بلوتوث 5.3","حتى 24 ساعة مع العلبة","ميكروفون مدمج للمكالمات"]},
+ {id:3,name:"شاحن سريع 65 واط",price:13.9,img:"",color:"#7a4b2a",desc:"شاحن صغير يشحن الهاتف واللابتوب بسرعة.",feat:["3 منافذ","حماية من الحرارة الزائدة","متوافق مع معظم الأجهزة"]},
+ {id:4,name:"حقيبة ظهر مقاومة للماء",price:21,img:"",color:"#2f5d50",desc:"حقيبة عملية للدراسة والسفر مع منفذ USB.",feat:["مقاومة للماء","جيب للابتوب 15 بوصة","سعة 25 لتر"]},
+ {id:5,name:"إضاءة LED ذكية",price:9.9,img:"",color:"#8a6a12",desc:"شريط إضاءة بألوان متعددة يُتحكم به من الهاتف.",feat:["16 مليون لون","تحكم بتطبيق وريموت","طول 5 أمتار"]},
+ {id:6,name:"حامل هاتف للسيارة",price:7.5,img:"",color:"#5b2e45",desc:"حامل مغناطيسي ثابت يناسب كل أنواع الهواتف.",feat:["مغناطيس قوي","دوران 360 درجة","تركيب سهل"]}
+];
+/* ====================================== */
+var cart={};var $=function(i){return document.getElementById(i)};
+function money(n){return n.toFixed(2)+" "+CONFIG.currency}
+function render(){
+ $("grid").innerHTML=PRODUCTS.map(function(p){
+  var im=p.img?'<img src="'+p.img+'" alt="'+p.name+'" loading="lazy" onerror="this.outerHTML=\'<div class=ph style=background:'+p.color+'>'+p.name+'</div>\'">':'<div class="ph" style="background:'+p.color+'">'+p.name+'</div>';
+  return '<div class="card">'+im+'<div class="body"><h3>'+p.name+'</h3><p>'+p.desc+'</p><ul>'+p.feat.map(function(f){return"<li>"+f+"</li>"}).join("")+'</ul><div class="price">'+money(p.price)+'</div><button class="add" onclick="add('+p.id+')">أضف إلى السلة</button></div></div>';
+ }).join("");
+}
+function add(id){cart[id]=(cart[id]||0)+1;upd();$("dlg").showModal()}
+function chg(id,d){cart[id]=(cart[id]||0)+d;if(cart[id]<=0)delete cart[id];upd()}
+function sub(){return Object.keys(cart).reduce(function(s,id){return s+cart[id]*PRODUCTS.filter(function(p){return p.id==id})[0].price},0)}
+function shipCost(){var c=SHIPPING[$("country").value]||SHIPPING["دول أخرى"];var m=document.querySelector("input[name=ship]:checked");return c[m?+m.value:0]}
+function upd(){
+ var n=Object.keys(cart).reduce(function(s,k){return s+cart[k]},0);$("cnt").textContent=n;
+ if(!n){$("items").innerHTML="<p>السلة فارغة.</p>";$("checkout").style.display="none";return}
+ $("items").innerHTML=Object.keys(cart).map(function(id){var p=PRODUCTS.filter(function(x){return x.id==id})[0];
+  return '<div class="row"><span>'+p.name+'</span><span class="qty"><button onclick="chg('+id+',-1)">-</button> '+cart[id]+' <button onclick="chg('+id+',1)">+</button></span><b>'+money(p.price*cart[id])+'</b></div>'}).join("");
+ $("checkout").style.display="flex";
+ $("total").textContent=money(sub()+shipCost());
+}
+function init(){
+ $("country").innerHTML=Object.keys(SHIPPING).map(function(c){return"<option>"+c+"</option>"}).join("");
+ $("ship").innerHTML=SHIPMETH.map(function(m,i){return'<label class="opt"><input type="radio" name="ship" value="'+m[1]+'"'+(i?'':' checked')+'>'+m[0]+'</label>'}).join("");
+ $("pay").innerHTML=PAYMETH.map(function(m,i){return'<label class="opt"><input type="radio" name="pay" value="'+m[1]+'"'+(i?'':' checked')+'>'+m[0]+'</label>'}).join("");
+ $("country").onchange=upd;$("ship").onchange=upd;
+ $("openCart").onclick=function(){upd();$("dlg").showModal()};
+ $("close").onclick=function(){$("dlg").close()};
+ $("send").onclick=send;
+ render();upd();
+}
+function send(){
+ var d={name:$("name").value.trim(),phone:$("phone").value.trim(),country:$("country").value,addr:$("addr").value.trim()};
+ if(!d.name||!d.phone||!d.addr){alert("يرجى ملء الاسم والهاتف والعنوان");return}
+ var pay=document.querySelector("input[name=pay]:checked").value;
+ var lines=Object.keys(cart).map(function(id){var p=PRODUCTS.filter(function(x){return x.id==id})[0];return p.name+" x"+cart[id]}).join("\n");
+ var total=money(sub()+shipCost());
+ var text="طلب جديد من AURA IMPEX\n"+lines+"\nالمجموع مع الشحن: "+total+"\nالدفع: "+pay+"\nالاسم: "+d.name+"\nالهاتف: "+d.phone+"\nالبلد: "+d.country+"\nالعنوان: "+d.addr;
+ if(CONFIG.formEndpoint){try{fetch(CONFIG.formEndpoint,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({message:text})})}catch(e){}}
+ var m=$("msg");m.style.display="block";
+ var extra=pay=="bank"?"<br>"+CONFIG.bankInfo:"";
+ if(pay=="paypal"&&CONFIG.paypalMe)extra='<br><a href="https://'+CONFIG.paypalMe.replace(/^https?:\/\//,"")+"/"+(sub()+shipCost()).toFixed(2)+'" target="_blank">ادفع عبر PayPal</a>';
+ m.innerHTML="تم تسجيل طلبك. سنتواصل معك لتأكيده."+extra;
+ window.open("https://wa.me/"+CONFIG.whatsapp+"?text="+encodeURIComponent(text),"_blank");
+ cart={};setTimeout(upd,50);
+}
+init();
+</script>
+</body>
+</html>
